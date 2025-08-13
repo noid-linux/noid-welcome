@@ -1,0 +1,11 @@
+[package]
+name = "noid-welcome"
+version = "0.2.1"
+description = "Noid Linux Welcome Screen"
+authors = ["Naz <ndpm13@ch-naseem.com>"]
+license = "MIT"
+repository = "https://git.ch-naseem.com/noid-linux/noid-welcome"
+homepage = "https://git.ch-naseem.com/noid-linux/noid-welcome"
+edition = "2024"
+
+[dependencies]
