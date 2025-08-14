@@ -31,6 +31,7 @@
 		"vite": "^7.1.2"
 	},
 	"dependencies": {
-		"@sveltejs/adapter-static": "^3.0.9"
+		"@sveltejs/adapter-static": "^3.0.9",
+		"mode-watcher": "^1.1.0"
 	}
 }
