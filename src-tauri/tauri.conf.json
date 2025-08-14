@@ -14,8 +14,8 @@
       {
         "title": "Noid Linux Welcome Screen",
         "width": 800,
-        "height": 600,
-        "resizable": true,
+        "height": 500,
+        "resizable": false,
         "fullscreen": false
       }
     ],
