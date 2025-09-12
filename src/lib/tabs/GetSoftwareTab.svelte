@@ -87,7 +87,7 @@
     </ScrollArea>
     <Button
       onclick={() => {
-        tabChange("welcome");
+        tabChange("ndpm");
       }}
       size="lg"
       ><div class="flex items-center gap-1">
