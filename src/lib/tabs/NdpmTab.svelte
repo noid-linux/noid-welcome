@@ -21,7 +21,7 @@
   <div class="flex justify-end mt-1.75">
     <Button
       onclick={() => {
-        tabChange("welcome");
+        tabChange("tweaks");
       }}
       size="lg"
       ><div class="flex items-center gap-1">

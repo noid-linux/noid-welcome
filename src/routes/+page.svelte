@@ -3,12 +3,14 @@
 
   import GetSoftwareTab from "$lib/tabs/GetSoftwareTab.svelte";
   import NdpmTab from "$lib/tabs/NdpmTab.svelte";
+  import TweaksTab from "$lib/tabs/TweaksTab.svelte";
   import WelcomeTab from "$lib/tabs/WelcomeTab.svelte";
 
   let tabs = [
     { name: "welcome", title: "Welcome", component: WelcomeTab },
     { name: "getsoftware", title: "Get Software", component: GetSoftwareTab },
     { name: "ndpm", title: "NDPM", component: NdpmTab },
+    { name: "tweaks", title: "Tweaks", component: TweaksTab },
   ];
 
   let activeTab = $state("welcome");
