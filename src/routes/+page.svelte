@@ -1,9 +1,13 @@
 <script lang="ts">
   import * as Tabs from "$lib/components/ui/tabs/index.js";
 
+  import GetSoftwareTab from "$lib/tabs/GetSoftwareTab.svelte";
   import WelcomeTab from "$lib/tabs/WelcomeTab.svelte";
 
-  let tabs = [{ name: "welcome", title: "Welcome", component: WelcomeTab }];
+  let tabs = [
+    { name: "welcome", title: "Welcome", component: WelcomeTab },
+    { name: "getsoftware", title: "Get Software", component: GetSoftwareTab },
+  ];
 
   let activeTab = $state("welcome");
 

@@ -54,7 +54,7 @@
     </div>
     <Button
       onclick={() => {
-        tabChange("welcome");
+        tabChange("getsoftware");
       }}
       size="lg"
       ><div class="flex items-center gap-1">
