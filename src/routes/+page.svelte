@@ -1,24 +1,28 @@
 <script lang="ts">
-  import TabOne from "$lib/tabs/TabOne.svelte";
-  import TabTwo from "$lib/tabs/TabTwo.svelte";
-
   import * as Tabs from "$lib/components/ui/tabs/index.js";
 
-  let tabs = [
-    { name: "tab1", title: "Tab One", component: TabOne },
-    { name: "tab2", title: "Tab Two", component: TabTwo },
-  ];
+  import WelcomeTab from "$lib/tabs/WelcomeTab.svelte";
+
+  let tabs = [{ name: "welcome", title: "Welcome", component: WelcomeTab }];
+
+  let activeTab = $state("welcome");
+
+  function handleTabChange(tab: string) {
+    activeTab = tab;
+  }
 </script>
 
-<Tabs.Root value="tab1" class="">
+<Tabs.Root value={activeTab} class="m-5 select-none">
   <Tabs.List class="self-center">
     {#each tabs as tab}
-      <Tabs.Trigger value={tab.name}>{tab.title}</Tabs.Trigger>
+      <Tabs.Trigger onclick={() => (activeTab = tab.name)} value={tab.name}
+        >{tab.title}</Tabs.Trigger
+      >
     {/each}
   </Tabs.List>
   {#each tabs as tab}
     <Tabs.Content value={tab.name}>
-      <svelte:component this={tab.component} />
+      <tab.component tabChange={handleTabChange} />
     </Tabs.Content>
   {/each}
 </Tabs.Root>
