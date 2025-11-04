@@ -9,3 +9,6 @@ homepage = "https://git.ch-naseem.com/noid-linux/noid-welcome"
 edition = "2024"
 
 [dependencies]
+eframe = { version = "0.33.0", features = ["default"] }
+egui_extras = { version = "0.33.0", features = ["default", "image"] }
+env_logger = { version = "0.11.8", features = ["auto-color", "humantime"] }
