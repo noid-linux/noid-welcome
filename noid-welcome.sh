@@ -179,6 +179,6 @@ Have questions or feedback? Don't hesitate to reach out.
 --field="Links:LBL" " " \
 --field="Source Code!Source Code.":link "https://git.ch-naseem.com/noid-linux" \
 --field="Support!Support Matrix channel.":link "https://matrix.to/#/#noid-support:ch-naseem.com" \
---button="  Exit!exit!gtk-cancel:1"
+--button="  Exit!exit!gtk-cancel:0"
 
 rm -f ~/.config/autostart/noid-welcome.desktop
