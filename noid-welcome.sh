@@ -109,7 +109,7 @@ oxidize_system() {
     summary="
     This tweak will install Rust and some useful CLIs, in the process it will:
     - Install rustup
-    - Install these CLIs with Cargo: ripgrep, bat, fd-find, zoxide, eza, tealdeer, du-dust, dysk, bottom, cargo-update
+    - Install these CLIs: ripgrep, bat, fd-find, zoxide, eza, tealdeer, du-dust, bottom, cargo-update
     - Modify these files: ~/.zshrc, ~/.bashrc"
     
     aliases_conf="
@@ -136,7 +136,7 @@ oxidize_system() {
     fi
     
     echo "Installing CLI tools..."
-    if ! ~/.cargo/bin/cargo install ripgrep bat fd-find zoxide eza tealdeer du-dust dysk bottom cargo-update; then
+    if ! sudo xbps-install -Sy ripgrep bat fd zoxide eza tealdeer dust bottom cargo-update; then
         echo "CLI tools installation failed. Exiting."
         exit 1
     fi
