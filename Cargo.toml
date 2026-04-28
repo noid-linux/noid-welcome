@@ -1,0 +1,10 @@
+[package]
+name = "noid-welcome"
+version = "0.3.0"
+authors = ["Naz <ndpm13@ch-naseem.com>"]
+edition = "2024"
+description = "Noid Linux Welcome Screen"
+repository = "https://forge.ch-naseem.com/noid-linux/noid-welcome"
+license = "GPL-3.0-or-later"
+
+[dependencies]
