@@ -24,6 +24,14 @@ use gtk::{prelude::*, ApplicationWindow};
 const APP_ID: &str = "com.ch-naseem.NoidWelcome";
 
 fn main() -> glib::ExitCode {
+    // FIXME: this breaks outside of Cargo
+    let resources = gio::Resource::load(format!(
+        "{}/data/resources/resources.gresource",
+        std::env::var("CARGO_MANIFEST_DIR").unwrap()
+    ))
+    .expect("Could not load resources");
+    gio::resources_register(&resources);
+
     // Create a new application
     let app = Application::builder().application_id(APP_ID).build();
 
@@ -35,11 +43,14 @@ fn main() -> glib::ExitCode {
 }
 
 fn build_ui(app: &Application) {
+    let builder = gtk::Builder::from_resource("/com/ch-naseem/NoidWelcome/ui/window.ui");
+
     // Create a window and set the title
-    let window = ApplicationWindow::builder()
-        .application(app)
-        .title("Welcome to Noid Linux")
-        .build();
+    let window: ApplicationWindow = builder
+        .object("window")
+        .expect("Could not get window object");
+
+    window.set_application(Some(app));
 
     // Present window
     window.present();

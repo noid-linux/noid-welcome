@@ -419,6 +419,7 @@ dependencies = [
 name = "noid-welcome"
 version = "0.3.0"
 dependencies = [
+ "gio",
  "gtk4",
 ]
 

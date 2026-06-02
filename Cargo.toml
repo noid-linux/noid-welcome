@@ -8,4 +8,5 @@ repository = "https://forge.ch-naseem.com/noid-linux/noid-welcome"
 license = "GPL-3.0-or-later"
 
 [dependencies]
+gio = { version = "0.22.6", features = ["v2_88"] }
 gtk = { version = "0.11.3", package = "gtk4", features = ["v4_22"] }
