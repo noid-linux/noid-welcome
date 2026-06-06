@@ -13,7 +13,7 @@ build: data/resources/resources.gresource
 
 .PHONY: run
 run: build
-	GTK_THEME=Adwaita-dark cargo run -q
+	GTK_THEME=Adwaita-dark SCRIPTS_DIR=$(CURDIR)/scripts cargo run -q
 
 .PHONY: clean
 clean:

@@ -6,7 +6,100 @@ ApplicationWindow window {
   default-height: 600;
   resizable: false;
 
-  child: Button button {
-    label: "Hello, World";
+  child: Box {
+    orientation: vertical;
+    spacing: 0;
+    margin-top: 20;
+    margin-bottom: 20;
+    margin-start: 20;
+    margin-end: 20;
+
+    Box {
+      orientation: horizontal;
+      spacing: 16;
+      margin-bottom: 16;
+
+      Image {
+        resource: "/com/ch-naseem/NoidWelcome/images/logo.png";
+        pixel-size: 250;
+        valign: center;
+      }
+
+      Box {
+        orientation: vertical;
+        spacing: 6;
+        valign: center;
+
+        Label {
+          label: "Welcome to Noid GNU/Linux";
+          halign: start;
+          styles ["title-1"]
+        }
+
+        Label {
+          label: "This tool provides quick access to software installation, system updates, and setup scripts for virtualization and Rust-based tools.";
+          halign: start;
+          wrap: true;
+          max-width-chars: 80;
+        }
+
+        Label {
+          label: "\nHave questions or feedback? Don't hesitate to reach out.";
+          halign: start;
+          wrap: true;
+          max-width-chars: 80;
+        }
+      }
+    }
+
+    Box {
+      orientation: vertical;
+      spacing: 8;
+      vexpand: true;
+
+      Button system_update {
+        label: "System update";
+      }
+
+      Button virt_manager {
+        label: "Install virt-manager";
+      }
+
+      Button oxidize_system {
+        label: "Oxidize your system";
+      }
+    }
+
+    Box {
+      orientation: horizontal;
+      margin-top: 8;
+
+      LinkButton {
+        label: "Source code";
+        uri: "https://forge.ch-naseem.com/noid-linux";
+        tooltip-text: "Source Code";
+      }
+
+      LinkButton {
+        label: "Support";
+        uri: "https://matrix.to/#/#noid-support:ch-naseem.com";
+        tooltip-text: "Support Matrix channel";
+      }
+
+      Box {
+        hexpand: true;
+        halign: end;
+        spacing: 8;
+
+        Label {
+          label: "Launch on startup";
+          halign: start;
+        }
+
+        Switch autostart {
+          valign: center;
+        }
+      }
+    }
   };
 }

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+. $SCRIPTS_DIR/common.sh
+
+system_update() {
+    summary="This tweak will attempt to update your system using xbps package manager"
+
+    echo "$banner"
+    echo "$summary"
+
+    ndpm update && ndpm upgrade -y
+
+    echo "System update complete, you may close this window now."
+}
+export -f system_update
+
+alacritty --hold -e bash -c system_update

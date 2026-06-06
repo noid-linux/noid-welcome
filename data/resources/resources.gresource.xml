@@ -3,5 +3,6 @@
   <gresource prefix="/com/ch-naseem/NoidWelcome">
     <!-- see https://gtk-rs.org/gtk4-rs/git/docs/gtk4/struct.Application.html#automatic-resources -->
     <file>ui/window.ui</file>
+    <file>images/logo.png</file>
   </gresource>
 </gresources>
