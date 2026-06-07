@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-. $SCRIPTS_DIR/common.sh
+. @SCRIPTSDIR@/common.sh
 
 system_update() {
     summary="This tweak will attempt to update your system using xbps package manager"

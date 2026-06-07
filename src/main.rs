@@ -18,21 +18,21 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+mod config;
+
 use std::env::home_dir;
 use std::path::PathBuf;
 
 use gtk::{glib, Application};
 use gtk::{prelude::*, ApplicationWindow};
 
+use config::{PKGDATADIR, SCRIPTSDIR};
+
 const APP_ID: &str = "com.ch-naseem.NoidWelcome";
 
 fn main() -> glib::ExitCode {
-    // FIXME: this breaks outside of Cargo
-    let resources = gio::Resource::load(format!(
-        "{}/data/resources/resources.gresource",
-        std::env::var("CARGO_MANIFEST_DIR").unwrap()
-    ))
-    .expect("Could not load resources");
+    let resources = gio::Resource::load(format!("{}/resources.gresource", PKGDATADIR))
+        .expect("Could not load resources");
     gio::resources_register(&resources);
 
     // Create a new application
@@ -60,7 +60,7 @@ fn build_ui(app: &Application) {
     handle_autostart(switch_autostart);
 
     // System tweaks
-    let scripts_dir = PathBuf::from(std::env!("SCRIPTS_DIR"));
+    let scripts_dir = PathBuf::from(SCRIPTSDIR);
 
     let btn_system_update: gtk::Button = builder.object("system_update").unwrap();
     handle_system_update(btn_system_update, scripts_dir.clone());

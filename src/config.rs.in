@@ -1,0 +1,2 @@
+pub static PKGDATADIR: &str = @PKGDATADIR@;
+pub static SCRIPTSDIR: &str = @SCRIPTSDIR@;

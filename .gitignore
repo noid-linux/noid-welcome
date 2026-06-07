@@ -1,3 +1,10 @@
 /target
 data/resources/ui/*.ui
 data/resources/resources.gresource
+src/config.rs
+config.mk
+scripts/common.sh
+scripts/oxidize_system.sh
+scripts/system_update.sh
+scripts/virt_manager.sh
+_prefix
