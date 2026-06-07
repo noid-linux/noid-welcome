@@ -3,10 +3,8 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use gio::glib::home_dir;
-
 use super::*;
-use crate::config::SCRIPTSDIR;
+use crate::util::{autostart_file, scripts_dir};
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
@@ -24,6 +22,47 @@ pub struct NoidWelcomeWindow {
     pub button_oxidize_system: TemplateChild<gtk::Button>,
 }
 
+#[gtk::template_callbacks]
+impl NoidWelcomeWindow {
+    #[template_callback]
+    fn on_switch_autostart_state_set(_switch: &gtk::Switch, state: bool) -> glib::Propagation {
+        let autostart_file = autostart_file();
+
+        if state {
+            std::fs::copy(
+                std::path::PathBuf::from("/usr/share/applications/noid-welcome.desktop"),
+                &autostart_file,
+            )
+            .unwrap();
+        } else {
+            std::fs::remove_file(&autostart_file).unwrap();
+        }
+
+        glib::Propagation::Proceed
+    }
+
+    #[template_callback]
+    fn on_button_system_update_clicked(_button: &gtk::Button) {
+        let _ = std::process::Command::new(scripts_dir().join("system_update.sh"))
+            .spawn()
+            .expect("failed to update your system");
+    }
+
+    #[template_callback]
+    fn on_button_virt_manager_clicked(_button: &gtk::Button) {
+        let _ = std::process::Command::new(scripts_dir().join("virt_manager.sh"))
+            .spawn()
+            .expect("failed to update your system");
+    }
+
+    #[template_callback]
+    fn on_button_oxidize_system_clicked(_button: &gtk::Button) {
+        let _ = std::process::Command::new(scripts_dir().join("oxidize_system.sh"))
+            .spawn()
+            .expect("failed to update your system");
+    }
+}
+
 #[glib::object_subclass]
 impl ObjectSubclass for NoidWelcomeWindow {
     const NAME: &'static str = "NoidWelcomeWindow";
@@ -32,6 +71,7 @@ impl ObjectSubclass for NoidWelcomeWindow {
 
     fn class_init(klass: &mut Self::Class) {
         klass.bind_template();
+        klass.bind_template_callbacks();
     }
 
     fn instance_init(obj: &glib::subclass::InitializingObject<Self>) {
@@ -43,56 +83,8 @@ impl ObjectImpl for NoidWelcomeWindow {
     fn constructed(&self) {
         self.parent_constructed();
 
-        let autostart_file = home_dir()
-            .join(".config")
-            .join("autostart")
-            .join("noid-welcome.desktop");
-
         // Handle autostart
-        let switch_autostart = &self.switch_autostart;
-
-        switch_autostart.set_active(autostart_file.exists());
-
-        switch_autostart.connect_state_set(move |_, state| {
-            if state {
-                std::fs::copy(
-                    std::path::PathBuf::from("/usr/share/applications/noid-welcome.desktop"),
-                    &autostart_file,
-                )
-                .unwrap();
-            } else {
-                std::fs::remove_file(&autostart_file).unwrap();
-            }
-
-            glib::Propagation::Proceed
-        });
-
-        // Handle system tweaks
-        let scripts_dir = std::path::PathBuf::from(SCRIPTSDIR);
-
-        let scripts_dir_clone = scripts_dir.clone();
-        self.button_system_update.connect_clicked(move |_| {
-            let _ = std::process::Command::new(scripts_dir_clone.join("system_update.sh"))
-                .spawn()
-                .expect("failed to update your system")
-                .wait();
-        });
-
-        let scripts_dir_clone = scripts_dir.clone();
-        self.button_virt_manager.connect_clicked(move |_| {
-            let _ = std::process::Command::new(scripts_dir_clone.join("virt_manager.sh"))
-                .spawn()
-                .expect("failed to install virt-manager")
-                .wait();
-        });
-
-        let scripts_dir_clone = scripts_dir.clone();
-        self.button_oxidize_system.connect_clicked(move |_| {
-            let _ = std::process::Command::new(scripts_dir_clone.join("oxidize_system.sh"))
-                .spawn()
-                .expect("failed to oxidize system")
-                .wait();
-        });
+        self.switch_autostart.set_active(autostart_file().exists());
     }
 }
 

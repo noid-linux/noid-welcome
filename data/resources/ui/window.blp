@@ -59,14 +59,17 @@ template $NoidWelcomeWindow: ApplicationWindow {
 
       Button button_system_update {
         label: "System update";
+        clicked => $on_button_system_update_clicked();
       }
 
       Button button_virt_manager {
         label: "Install virt-manager";
+        clicked => $on_button_virt_manager_clicked();
       }
 
       Button button_oxidize_system {
         label: "Oxidize your system";
+        clicked => $on_button_oxidize_system_clicked();
       }
     }
 
@@ -98,6 +101,7 @@ template $NoidWelcomeWindow: ApplicationWindow {
 
         Switch switch_autostart {
           valign: center;
+          state-set => $on_switch_autostart_state_set();
         }
       }
     }

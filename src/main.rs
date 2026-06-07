@@ -20,6 +20,7 @@
 
 mod application;
 mod config;
+mod util;
 mod window;
 
 use application::NoidWelcomeApplication;
