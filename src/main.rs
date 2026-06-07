@@ -18,15 +18,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+mod application;
 mod config;
+mod window;
 
-use std::env::home_dir;
-use std::path::PathBuf;
+use application::NoidWelcomeApplication;
+use gtk::glib;
+use gtk::prelude::*;
 
-use gtk::{glib, Application};
-use gtk::{prelude::*, ApplicationWindow};
-
-use config::{PKGDATADIR, SCRIPTSDIR};
+use config::PKGDATADIR;
 
 const APP_ID: &str = "com.ch-naseem.NoidWelcome";
 
@@ -36,92 +36,8 @@ fn main() -> glib::ExitCode {
     gio::resources_register(&resources);
 
     // Create a new application
-    let app = Application::builder().application_id(APP_ID).build();
-
-    // Connect to "activate" signal of `app`
-    app.connect_activate(build_ui);
+    let app = NoidWelcomeApplication::new(APP_ID, &gio::ApplicationFlags::empty());
 
     // Run the application
     app.run()
-}
-
-fn build_ui(app: &Application) {
-    let builder = gtk::Builder::from_resource("/com/ch-naseem/NoidWelcome/ui/window.ui");
-
-    // Create a window and set the title
-    let window: ApplicationWindow = builder
-        .object("window")
-        .expect("Could not get window object");
-
-    window.set_application(Some(app));
-
-    // Autostart
-    let switch_autostart: gtk::Switch = builder.object("autostart").unwrap();
-    handle_autostart(switch_autostart);
-
-    // System tweaks
-    let scripts_dir = PathBuf::from(SCRIPTSDIR);
-
-    let btn_system_update: gtk::Button = builder.object("system_update").unwrap();
-    handle_system_update(btn_system_update, scripts_dir.clone());
-
-    let btn_virt_manager: gtk::Button = builder.object("virt_manager").unwrap();
-    handle_virt_manager(btn_virt_manager, scripts_dir.clone());
-
-    let btn_oxidize_system: gtk::Button = builder.object("oxidize_system").unwrap();
-    handle_oxidize_system(btn_oxidize_system, scripts_dir.clone());
-
-    // Present window
-    window.present();
-}
-
-fn handle_autostart(s: gtk::Switch) {
-    if let Some(home_dir) = home_dir() {
-        let autostart_file = home_dir
-            .join(".config")
-            .join("autostart")
-            .join("noid-welcome.desktop");
-
-        s.set_active(autostart_file.exists());
-
-        s.connect_state_set(move |_, state| {
-            if state {
-                std::fs::copy(
-                    PathBuf::from("/usr/share/applications/noid-welcome.desktop"),
-                    &autostart_file,
-                )
-                .unwrap();
-            } else {
-                std::fs::remove_file(&autostart_file).unwrap();
-            }
-            glib::Propagation::Proceed
-        });
-    }
-}
-
-fn handle_system_update(btn: gtk::Button, scripts_dir: PathBuf) {
-    btn.connect_clicked(move |_| {
-        let _ = std::process::Command::new(scripts_dir.join("system_update.sh"))
-            .spawn()
-            .expect("failed to update your system")
-            .wait();
-    });
-}
-
-fn handle_virt_manager(btn: gtk::Button, scripts_dir: PathBuf) {
-    btn.connect_clicked(move |_| {
-        let _ = std::process::Command::new(scripts_dir.join("virt_manager.sh"))
-            .spawn()
-            .expect("failed to update your system")
-            .wait();
-    });
-}
-
-fn handle_oxidize_system(btn: gtk::Button, scripts_dir: PathBuf) {
-    btn.connect_clicked(move |_| {
-        let _ = std::process::Command::new(scripts_dir.join("oxidize_system.sh"))
-            .spawn()
-            .expect("failed to update your system")
-            .wait();
-    });
 }

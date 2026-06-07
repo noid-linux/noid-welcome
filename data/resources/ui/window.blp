@@ -1,6 +1,6 @@
 using Gtk 4.0;
 
-ApplicationWindow window {
+template $NoidWelcomeWindow: ApplicationWindow {
   title: "Welcome to Noid Linux";
   default-width: 1000;
   default-height: 600;
@@ -57,15 +57,15 @@ ApplicationWindow window {
       spacing: 8;
       vexpand: true;
 
-      Button system_update {
+      Button button_system_update {
         label: "System update";
       }
 
-      Button virt_manager {
+      Button button_virt_manager {
         label: "Install virt-manager";
       }
 
-      Button oxidize_system {
+      Button button_oxidize_system {
         label: "Oxidize your system";
       }
     }
@@ -96,7 +96,7 @@ ApplicationWindow window {
           halign: start;
         }
 
-        Switch autostart {
+        Switch switch_autostart {
           valign: center;
         }
       }
