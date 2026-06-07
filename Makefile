@@ -33,6 +33,12 @@ install: build
 	install -Dm 644 data/resources/resources.gresource \
 		$(DESTDIR)$(SHAREDIR)/noid-welcome/resources.gresource
 
+.PHONY: uninstall
+uninstall:
+	rm -f $(DESTDIR)$(BINDIR)/noid-welcome
+	rm -rf $(DESTDIR)$(LIBEXECDIR)/noid-welcome
+	rm -rf $(DESTDIR)$(SHAREDIR)/noid-welcome
+
 .PHONY: run
 run: build
 	GTK_THEME=Adwaita-dark $(CARGO) run $(CARGO_OPTS)
