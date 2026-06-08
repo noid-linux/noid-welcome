@@ -1,5 +1,5 @@
 /target
-data/resources/ui/*.ui
+data/resources/ui/**/*.ui
 data/resources/resources.gresource
 src/config.rs
 config.mk

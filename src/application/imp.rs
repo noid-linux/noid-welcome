@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use crate::window::NoidWelcomeWindow;
+use crate::window::{NoidWelcomeWindow, StackPageMain};
 
 use super::*;
 
@@ -26,6 +26,11 @@ impl ObjectImpl for NoidWelcomeApplication {
 }
 
 impl ApplicationImpl for NoidWelcomeApplication {
+    fn startup(&self) {
+        self.parent_startup();
+        StackPageMain::static_type();
+    }
+
     fn activate(&self) {
         let application = self.obj();
 

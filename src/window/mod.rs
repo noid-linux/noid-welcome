@@ -7,7 +7,10 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
+pub use stack::main::StackPageMain;
+
 mod imp;
+mod stack;
 
 glib::wrapper! {
     pub struct NoidWelcomeWindow(ObjectSubclass<imp::NoidWelcomeWindow>)

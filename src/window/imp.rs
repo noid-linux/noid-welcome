@@ -6,35 +6,13 @@
 use std::ffi::OsStr;
 
 use super::*;
-use crate::util::{autostart_file, read_line_utf8_async_to_buffer, scripts_dir};
-
-const HEADER: &str = r#"
- _   _       _     _   _____                  _
-| \ | |     (_)   | | |_   _|                | |
-|  \| | ___  _  __| |   | |_      _____  __ _| | _____
-| . ` |/ _ \| |/ _` |   | \ \ /\ / / _ \/ _` | |/ / __|
-| |\  | (_) | | (_| |   | |\ V  V /  __/ (_| |   <\__ \
-\_| \_/\___/|_|\__,_|   \_/ \_/\_/ \___|\__,_|_|\_\___/
-"#;
+use crate::util::{read_line_utf8_async_to_buffer, scripts_dir};
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
 pub struct NoidWelcomeWindow {
     #[template_child]
     pub stack: TemplateChild<gtk::Stack>,
-
-    // main stack
-    #[template_child]
-    pub switch_autostart: TemplateChild<gtk::Switch>,
-
-    #[template_child]
-    pub button_system_update: TemplateChild<gtk::Button>,
-
-    #[template_child]
-    pub button_virt_manager: TemplateChild<gtk::Button>,
-
-    #[template_child]
-    pub button_oxidize_system: TemplateChild<gtk::Button>,
 
     // log stack
     #[template_child]
@@ -115,90 +93,6 @@ impl NoidWelcomeWindow {
             ),
         );
     }
-
-    #[template_callback]
-    fn on_switch_autostart_state_set(&self, state: bool) -> glib::Propagation {
-        let autostart_file = autostart_file();
-
-        if state {
-            std::fs::copy(
-                std::path::PathBuf::from("/usr/share/applications/noid-welcome.desktop"),
-                &autostart_file,
-            )
-            .unwrap();
-        } else {
-            std::fs::remove_file(&autostart_file).unwrap();
-        }
-
-        glib::Propagation::Proceed
-    }
-
-    #[template_callback]
-    fn on_button_system_update_clicked(&self) {
-        self.stack.set_visible_child_name("log");
-        self.box_confirmation.set_visible(true);
-        self.label_title.set_label("System update");
-
-        let buffer = self.text_view_log.buffer();
-
-        buffer.set_text(&HEADER);
-        buffer.insert(
-            &mut buffer.end_iter(),
-            r#"
-This tweak will attempt to update your system using xbps package manager
-
-"#,
-        );
-    }
-
-    #[template_callback]
-    fn on_button_virt_manager_clicked(&self) {
-        self.stack.set_visible_child_name("log");
-        self.box_confirmation.set_visible(true);
-        self.label_title.set_label("Install virt-manager");
-
-        let buffer = self.text_view_log.buffer();
-
-        buffer.set_text(&HEADER);
-        buffer.insert(
-            &mut buffer.end_iter(),
-            r#"
-This tweak will install virt-manager, in the process it will:
-- Install these deps: qemu, virt-manager, virt-viewer, dnsmasq, vde2,
-  bridge-utils, openbsd-netcat, libguestfs
-- Enable these Runit services: libvirtd, virtlogd
-- Modify these files: /etc/libvirt/libvirtd.conf, /etc/libvirt/qemu.conf
-- Add your user to the libvirt user group.
-
-And you will need to restart for changes to take effect.
-
-"#,
-        );
-    }
-
-    #[template_callback]
-    fn on_button_oxidize_system_clicked(&self) {
-        self.stack.set_visible_child_name("log");
-        self.box_confirmation.set_visible(true);
-        self.label_title.set_label("Oxidize your system");
-
-        let buffer = self.text_view_log.buffer();
-
-        buffer.set_text(&HEADER);
-        buffer.insert(
-            &mut buffer.end_iter(),
-            r#"
-This tweak will install Rust and some useful CLIs, in the process it will:
-- Install rustup
-- Install these CLIs: ripgrep, bat, fd-find, zoxide, eza, tealdeer,
-  du-dust, bottom, cargo-update
-- Modify these files: ~/.zshrc, ~/.bashrc
-
-And you will need to restart for changes to take effect.
-
-"#,
-        );
-    }
 }
 
 #[glib::object_subclass]
@@ -220,9 +114,6 @@ impl ObjectSubclass for NoidWelcomeWindow {
 impl ObjectImpl for NoidWelcomeWindow {
     fn constructed(&self) {
         self.parent_constructed();
-
-        // Handle autostart
-        self.switch_autostart.set_active(autostart_file().exists());
     }
 }
 

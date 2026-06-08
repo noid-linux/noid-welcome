@@ -1,0 +1,102 @@
+using Gtk 4.0;
+
+template $StackPageMain: Box {
+  orientation: vertical;
+  spacing: 0;
+  margin-top: 20;
+  margin-bottom: 20;
+  margin-start: 20;
+  margin-end: 20;
+  
+  Box {
+    orientation: horizontal;
+    spacing: 16;
+    margin-bottom: 16;
+  
+    Image {
+      resource: "/com/ch-naseem/NoidWelcome/images/logo.png";
+      pixel-size: 250;
+      valign: center;
+    }
+  
+    Box {
+      orientation: vertical;
+      spacing: 6;
+      valign: center;
+  
+      Label {
+        label: "Welcome to Noid GNU/Linux";
+        halign: start;
+        styles ["title-1"]
+      }
+  
+      Label {
+        label: "This tool provides quick access to software installation, system updates, and setup scripts for virtualization and Rust-based tools.";
+        halign: start;
+        wrap: true;
+        max-width-chars: 80;
+      }
+  
+      Label {
+        label: "\nHave questions or feedback? Don't hesitate to reach out.";
+        halign: start;
+        wrap: true;
+        max-width-chars: 80;
+      }
+    }
+  }
+  
+  Box {
+    orientation: vertical;
+    spacing: 8;
+    vexpand: true;
+  
+    Button button_system_update {
+      label: "System update";
+      clicked => $on_button_system_update_clicked() swapped;
+    }
+  
+    Button button_virt_manager {
+      label: "Install virt-manager";
+      clicked => $on_button_virt_manager_clicked() swapped;
+    }
+  
+    Button button_oxidize_system {
+      label: "Oxidize your system";
+      clicked => $on_button_oxidize_system_clicked() swapped;
+    }
+  }
+  
+  Box {
+    orientation: horizontal;
+    margin-top: 8;
+  
+    LinkButton {
+      label: "Source code";
+      uri: "https://forge.ch-naseem.com/noid-linux";
+      tooltip-text: "Source Code";
+    }
+  
+    LinkButton {
+      label: "Support";
+      uri: "https://matrix.to/#/#noid-support:ch-naseem.com";
+      tooltip-text: "Support Matrix channel";
+    }
+  
+    Box {
+      hexpand: true;
+      halign: end;
+      spacing: 8;
+  
+      Label {
+        label: "Launch on startup";
+        halign: start;
+      }
+  
+      Switch switch_autostart {
+        valign: center;
+        state-set => $on_switch_autostart_state_set() swapped;
+      }
+    }
+  }
+}
