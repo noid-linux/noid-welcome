@@ -32,6 +32,9 @@ pub struct NoidWelcomeWindow {
     pub text_view_log: TemplateChild<gtk::TextView>,
 
     #[template_child]
+    pub box_confirmation: TemplateChild<gtk::Box>,
+
+    #[template_child]
     pub button_return: TemplateChild<gtk::Button>,
 }
 
@@ -45,25 +48,17 @@ impl NoidWelcomeWindow {
     }
 
     #[template_callback]
-    fn on_switch_autostart_state_set(&self, state: bool) -> glib::Propagation {
-        let autostart_file = autostart_file();
-
-        if state {
-            std::fs::copy(
-                std::path::PathBuf::from("/usr/share/applications/noid-welcome.desktop"),
-                &autostart_file,
-            )
-            .unwrap();
-        } else {
-            std::fs::remove_file(&autostart_file).unwrap();
-        }
-
-        glib::Propagation::Proceed
+    fn on_button_cancel_clicked(&self) {
+        self.box_confirmation.set_visible(false);
+        self.text_view_log
+            .buffer()
+            .set_text("Canceled system update.");
+        self.button_return.set_visible(true)
     }
 
     #[template_callback]
-    fn on_button_system_update_clicked(&self) {
-        self.stack.set_visible_child_name("log");
+    fn on_button_proceed_clicked(&self) {
+        self.box_confirmation.set_visible(false);
 
         let tweak = &scripts_dir()
             .join("system_update.sh")
@@ -94,8 +89,47 @@ impl NoidWelcomeWindow {
                 self.obj(),
                 move || {
                     window.imp().button_return.set_visible(true);
+
+                    let buffer = window.imp().text_view_log.buffer();
+                    buffer.insert(&mut buffer.end_iter(), "System update complete\n");
                 }
             ),
+        );
+    }
+
+    #[template_callback]
+    fn on_switch_autostart_state_set(&self, state: bool) -> glib::Propagation {
+        let autostart_file = autostart_file();
+
+        if state {
+            std::fs::copy(
+                std::path::PathBuf::from("/usr/share/applications/noid-welcome.desktop"),
+                &autostart_file,
+            )
+            .unwrap();
+        } else {
+            std::fs::remove_file(&autostart_file).unwrap();
+        }
+
+        glib::Propagation::Proceed
+    }
+
+    #[template_callback]
+    fn on_button_system_update_clicked(&self) {
+        self.stack.set_visible_child_name("log");
+        self.box_confirmation.set_visible(true);
+
+        self.text_view_log.buffer().set_text(
+            r#"
+ _   _       _     _   _____                  _
+| \ | |     (_)   | | |_   _|                | |
+|  \| | ___  _  __| |   | |_      _____  __ _| | _____
+| . ` |/ _ \| |/ _` |   | \ \ /\ / / _ \/ _` | |/ / __|
+| |\  | (_) | | (_| |   | |\ V  V /  __/ (_| |   <\__ \
+\_| \_/\___/|_|\__,_|   \_/ \_/\_/ \___|\__,_|_|\_\___/
+
+This tweak will attempt to update your system using xbps package manager
+"#,
         );
     }
 

@@ -1,14 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-. @SCRIPTSDIR@/common.sh
-
-summary="This tweak will attempt to update your system using xbps package manager
-"
-
-echo "$banner"
-echo "$summary"
-
 xbps-install -S && xbps-install -uy xbps && xbps-install -Suy
-
-echo "System update complete"
