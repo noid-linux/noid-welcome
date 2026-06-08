@@ -3,21 +3,13 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use gio::glib::{object::Cast, types::StaticType};
-use gtk::prelude::*;
+use std::sync::LazyLock;
 
-use crate::{util::autostart_file, window::NoidWelcomeWindow};
+use gio::glib::subclass::Signal;
+
+use crate::util::autostart_file;
 
 use super::*;
-
-const HEADER: &str = r#"
- _   _       _     _   _____                  _
-| \ | |     (_)   | | |_   _|                | |
-|  \| | ___  _  __| |   | |_      _____  __ _| | _____
-| . ` |/ _ \| |/ _` |   | \ \ /\ / / _ \/ _` | |/ / __|
-| |\  | (_) | | (_| |   | |\ V  V /  __/ (_| |   <\__ \
-\_| \_/\___/|_|\__,_|   \_/ \_/\_/ \___|\__,_|_|\_\___/
-"#;
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/stack/main.ui")]
@@ -39,79 +31,46 @@ pub struct StackPageMain {
 impl StackPageMain {
     #[template_callback]
     fn on_button_system_update_clicked(&self) {
-        if let Some(widget) = &self.obj().ancestor(NoidWelcomeWindow::static_type())
-            && let Ok(window) = widget.clone().downcast::<NoidWelcomeWindow>()
-        {
-            let window = window.imp();
-            let log = window.stack_page_log.imp();
-
-            window.stack.set_visible_child_name("log");
-            log.box_confirmation.set_visible(true);
-            log.label_title.set_label("System update");
-
-            let buffer = log.text_view_log.buffer();
-
-            buffer.set_text(HEADER);
-            buffer.insert(
-                &mut buffer.end_iter(),
-                r#"
+        self.obj().emit_by_name::<()>(
+            "run-tweak",
+            &[
+                &"System update",
+                &r#"
 This tweak will attempt to update your system using xbps package manager
 
 "#,
-            );
-        }
+            ],
+        );
     }
 
     #[template_callback]
     fn on_button_virt_manager_clicked(&self) {
-        if let Some(widget) = &self.obj().ancestor(NoidWelcomeWindow::static_type())
-            && let Ok(window) = widget.clone().downcast::<NoidWelcomeWindow>()
-        {
-            let window = window.imp();
-            let log = window.stack_page_log.imp();
-
-            window.stack.set_visible_child_name("log");
-            log.box_confirmation.set_visible(true);
-            log.label_title.set_label("Install virt-manager");
-
-            let buffer = log.text_view_log.buffer();
-
-            buffer.set_text(HEADER);
-            buffer.insert(
-                &mut buffer.end_iter(),
-                r#"
+        self.obj().emit_by_name::<()>(
+            "run-tweak",
+            &[
+                &"Install virt-manager",
+                &r#"
 This tweak will install virt-manager, in the process it will:
 - Install these deps: qemu, virt-manager, virt-viewer, dnsmasq, vde2,
   bridge-utils, openbsd-netcat, libguestfs
 - Enable these Runit services: libvirtd, virtlogd
 - Modify these files: /etc/libvirt/libvirtd.conf, /etc/libvirt/qemu.conf
 - Add your user to the libvirt user group.
-
+                                                                        
 And you will need to restart for changes to take effect.
 
 "#,
-            );
-        }
+            ],
+        );
     }
 
     #[template_callback]
     fn on_button_oxidize_system_clicked(&self) {
-        if let Some(widget) = &self.obj().ancestor(NoidWelcomeWindow::static_type())
-            && let Ok(window) = widget.clone().downcast::<NoidWelcomeWindow>()
-        {
-            let window = window.imp();
-            let log = window.stack_page_log.imp();
-
-            window.stack.set_visible_child_name("log");
-            log.box_confirmation.set_visible(true);
-            log.label_title.set_label("Oxidize your system");
-
-            let buffer = log.text_view_log.buffer();
-
-            buffer.set_text(HEADER);
-            buffer.insert(
-                &mut buffer.end_iter(),
-                r#"
+        self.obj().emit_by_name::<()>(
+            "run-tweak",
+            &[
+                &"Oxidize your system",
+                &r#"
 This tweak will install Rust and some useful CLIs, in the process it will:
 - Install rustup
 - Install these CLIs: ripgrep, bat, fd-find, zoxide, eza, tealdeer,
@@ -119,8 +78,8 @@ This tweak will install Rust and some useful CLIs, in the process it will:
 - Modify these files: ~/.zshrc, ~/.bashrc
 
 "#,
-            );
-        }
+            ],
+        );
     }
 
     #[template_callback]
@@ -163,6 +122,18 @@ impl ObjectImpl for StackPageMain {
 
         // Handle autostart
         self.switch_autostart.set_active(autostart_file().exists());
+    }
+
+    fn signals() -> &'static [glib::subclass::Signal] {
+        static SIGNALS: LazyLock<Vec<Signal>> = LazyLock::new(|| {
+            vec![
+                Signal::builder("run-tweak")
+                    .param_types([String::static_type(), String::static_type()])
+                    .build(),
+            ]
+        });
+
+        SIGNALS.as_ref()
     }
 }
 

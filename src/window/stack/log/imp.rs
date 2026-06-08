@@ -3,12 +3,11 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use std::ffi::OsStr;
+use std::{ffi::OsStr, sync::LazyLock};
 
-use crate::{
-    util::{read_line_utf8_async_to_buffer, scripts_dir},
-    window::NoidWelcomeWindow,
-};
+use gio::glib::subclass::Signal;
+
+use crate::util::{read_line_utf8_async_to_buffer, scripts_dir};
 
 use super::*;
 
@@ -32,13 +31,7 @@ pub struct StackPageLog {
 impl StackPageLog {
     #[template_callback]
     fn on_button_return_clicked(&self) {
-        if let Some(widget) = &self.obj().ancestor(NoidWelcomeWindow::static_type())
-            && let Ok(window) = widget.clone().downcast::<NoidWelcomeWindow>()
-        {
-            let window = window.imp();
-
-            window.stack.set_visible_child_name("main");
-        }
+        self.obj().emit_by_name::<()>("return", &[]);
 
         self.text_view_log.buffer().set_text("");
         self.label_title.set_label("");
@@ -121,6 +114,13 @@ impl ObjectSubclass for StackPageLog {
 impl ObjectImpl for StackPageLog {
     fn constructed(&self) {
         self.parent_constructed();
+    }
+
+    fn signals() -> &'static [glib::subclass::Signal] {
+        static SIGNALS: LazyLock<Vec<Signal>> =
+            LazyLock::new(|| vec![Signal::builder("return").build()]);
+
+        SIGNALS.as_ref()
     }
 }
 
