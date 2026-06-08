@@ -18,7 +18,11 @@ data/resources/ui/stack/main.ui: data/resources/ui/stack/main.blp
 	blueprint-compiler compile --output data/resources/ui/stack/main.ui \
 		data/resources/ui/stack/main.blp
 
-data/resources/resources.gresource: data/resources/resources.gresource.xml data/resources/ui/window.ui data/resources/ui/stack/main.ui
+data/resources/ui/stack/log.ui: data/resources/ui/stack/log.blp
+	blueprint-compiler compile --output data/resources/ui/stack/log.ui \
+		data/resources/ui/stack/log.blp
+
+data/resources/resources.gresource: data/resources/resources.gresource.xml data/resources/ui/window.ui data/resources/ui/stack/main.ui data/resources/ui/stack/log.ui
 	glib-compile-resources --sourcedir data/resources \
 		data/resources/resources.gresource.xml \
 		--target data/resources/resources.gresource

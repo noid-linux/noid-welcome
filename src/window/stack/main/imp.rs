@@ -43,12 +43,13 @@ impl StackPageMain {
             && let Ok(window) = widget.clone().downcast::<NoidWelcomeWindow>()
         {
             let window = window.imp();
+            let log = window.stack_page_log.imp();
 
             window.stack.set_visible_child_name("log");
-            window.box_confirmation.set_visible(true);
-            window.label_title.set_label("System update");
+            log.box_confirmation.set_visible(true);
+            log.label_title.set_label("System update");
 
-            let buffer = window.text_view_log.buffer();
+            let buffer = log.text_view_log.buffer();
 
             buffer.set_text(HEADER);
             buffer.insert(
@@ -56,7 +57,7 @@ impl StackPageMain {
                 r#"
 This tweak will attempt to update your system using xbps package manager
 
-    "#,
+"#,
             );
         }
     }
@@ -67,12 +68,13 @@ This tweak will attempt to update your system using xbps package manager
             && let Ok(window) = widget.clone().downcast::<NoidWelcomeWindow>()
         {
             let window = window.imp();
+            let log = window.stack_page_log.imp();
 
             window.stack.set_visible_child_name("log");
-            window.box_confirmation.set_visible(true);
-            window.label_title.set_label("Install virt-manager");
+            log.box_confirmation.set_visible(true);
+            log.label_title.set_label("Install virt-manager");
 
-            let buffer = window.text_view_log.buffer();
+            let buffer = log.text_view_log.buffer();
 
             buffer.set_text(HEADER);
             buffer.insert(
@@ -98,12 +100,13 @@ And you will need to restart for changes to take effect.
             && let Ok(window) = widget.clone().downcast::<NoidWelcomeWindow>()
         {
             let window = window.imp();
+            let log = window.stack_page_log.imp();
 
             window.stack.set_visible_child_name("log");
-            window.box_confirmation.set_visible(true);
-            window.label_title.set_label("Oxidize your system");
+            log.box_confirmation.set_visible(true);
+            log.label_title.set_label("Oxidize your system");
 
-            let buffer = window.text_view_log.buffer();
+            let buffer = log.text_view_log.buffer();
 
             buffer.set_text(HEADER);
             buffer.insert(

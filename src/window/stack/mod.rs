@@ -3,4 +3,5 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
+pub mod log;
 pub mod main;

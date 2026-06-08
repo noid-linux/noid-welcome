@@ -7,7 +7,7 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-pub use stack::main::StackPageMain;
+pub use stack::{log::StackPageLog, main::StackPageMain};
 
 mod imp;
 mod stack;
