@@ -3,16 +3,12 @@ set -euo pipefail
 
 . @SCRIPTSDIR@/common.sh
 
-system_update() {
-    summary="This tweak will attempt to update your system using xbps package manager"
+summary="This tweak will attempt to update your system using xbps package manager
+"
 
-    echo "$banner"
-    echo "$summary"
+echo "$banner"
+echo "$summary"
 
-    ndpm update && ndpm upgrade -y
+xbps-install -S && xbps-install -uy xbps && xbps-install -Suy
 
-    echo "System update complete, you may close this window now."
-}
-export -f system_update
-
-alacritty --hold -e bash -c system_update
+echo "System update complete"

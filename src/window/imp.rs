@@ -3,12 +3,18 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
+use std::ffi::OsStr;
+
 use super::*;
-use crate::util::{autostart_file, scripts_dir};
+use crate::util::{autostart_file, read_line_utf8_async_to_buffer, scripts_dir};
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
 pub struct NoidWelcomeWindow {
+    #[template_child]
+    pub stack: TemplateChild<gtk::Stack>,
+
+    // main stack
     #[template_child]
     pub switch_autostart: TemplateChild<gtk::Switch>,
 
@@ -20,10 +26,24 @@ pub struct NoidWelcomeWindow {
 
     #[template_child]
     pub button_oxidize_system: TemplateChild<gtk::Button>,
+
+    // log stack
+    #[template_child]
+    pub text_view_log: TemplateChild<gtk::TextView>,
+
+    #[template_child]
+    pub button_return: TemplateChild<gtk::Button>,
 }
 
 #[gtk::template_callbacks]
 impl NoidWelcomeWindow {
+    #[template_callback]
+    fn on_button_return_clicked(&self) {
+        self.stack.set_visible_child_name("main");
+        self.text_view_log.buffer().set_text("");
+        self.button_return.set_visible(false)
+    }
+
     #[template_callback]
     fn on_switch_autostart_state_set(&self, state: bool) -> glib::Propagation {
         let autostart_file = autostart_file();
@@ -43,9 +63,40 @@ impl NoidWelcomeWindow {
 
     #[template_callback]
     fn on_button_system_update_clicked(&self) {
-        let _ = std::process::Command::new(scripts_dir().join("system_update.sh"))
-            .spawn()
-            .expect("failed to update your system");
+        self.stack.set_visible_child_name("log");
+
+        let tweak = &scripts_dir()
+            .join("system_update.sh")
+            .to_string_lossy()
+            .to_string();
+
+        let argv = &[
+            OsStr::new("pkexec"),
+            OsStr::new("bash"),
+            OsStr::new("-c"),
+            OsStr::new(tweak),
+        ];
+
+        let subprocess = gio::Subprocess::newv(
+            argv,
+            gio::SubprocessFlags::STDOUT_PIPE.union(gio::SubprocessFlags::STDERR_MERGE),
+        )
+        .unwrap();
+        let stream = gio::DataInputStream::new(&subprocess.stdout_pipe().unwrap());
+
+        let buffer = self.text_view_log.buffer();
+
+        read_line_utf8_async_to_buffer(
+            stream,
+            buffer,
+            glib::clone!(
+                #[strong(rename_to = window)]
+                self.obj(),
+                move || {
+                    window.imp().button_return.set_visible(true);
+                }
+            ),
+        );
     }
 
     #[template_callback]
