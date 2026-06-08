@@ -25,7 +25,7 @@ pub struct NoidWelcomeWindow {
 #[gtk::template_callbacks]
 impl NoidWelcomeWindow {
     #[template_callback]
-    fn on_switch_autostart_state_set(_switch: &gtk::Switch, state: bool) -> glib::Propagation {
+    fn on_switch_autostart_state_set(&self, state: bool) -> glib::Propagation {
         let autostart_file = autostart_file();
 
         if state {
@@ -42,21 +42,21 @@ impl NoidWelcomeWindow {
     }
 
     #[template_callback]
-    fn on_button_system_update_clicked(_button: &gtk::Button) {
+    fn on_button_system_update_clicked(&self) {
         let _ = std::process::Command::new(scripts_dir().join("system_update.sh"))
             .spawn()
             .expect("failed to update your system");
     }
 
     #[template_callback]
-    fn on_button_virt_manager_clicked(_button: &gtk::Button) {
+    fn on_button_virt_manager_clicked(&self) {
         let _ = std::process::Command::new(scripts_dir().join("virt_manager.sh"))
             .spawn()
             .expect("failed to update your system");
     }
 
     #[template_callback]
-    fn on_button_oxidize_system_clicked(_button: &gtk::Button) {
+    fn on_button_oxidize_system_clicked(&self) {
         let _ = std::process::Command::new(scripts_dir().join("oxidize_system.sh"))
             .spawn()
             .expect("failed to update your system");
