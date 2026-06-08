@@ -8,6 +8,15 @@ use std::ffi::OsStr;
 use super::*;
 use crate::util::{autostart_file, read_line_utf8_async_to_buffer, scripts_dir};
 
+const HEADER: &str = r#"
+ _   _       _     _   _____                  _
+| \ | |     (_)   | | |_   _|                | |
+|  \| | ___  _  __| |   | |_      _____  __ _| | _____
+| . ` |/ _ \| |/ _` |   | \ \ /\ / / _ \/ _` | |/ / __|
+| |\  | (_) | | (_| |   | |\ V  V /  __/ (_| |   <\__ \
+\_| \_/\___/|_|\__,_|   \_/ \_/\_/ \___|\__,_|_|\_\___/
+"#;
+
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
 pub struct NoidWelcomeWindow {
@@ -29,6 +38,9 @@ pub struct NoidWelcomeWindow {
 
     // log stack
     #[template_child]
+    pub label_title: TemplateChild<gtk::Label>,
+
+    #[template_child]
     pub text_view_log: TemplateChild<gtk::TextView>,
 
     #[template_child]
@@ -44,6 +56,7 @@ impl NoidWelcomeWindow {
     fn on_button_return_clicked(&self) {
         self.stack.set_visible_child_name("main");
         self.text_view_log.buffer().set_text("");
+        self.label_title.set_label("");
         self.button_return.set_visible(false)
     }
 
@@ -59,9 +72,15 @@ impl NoidWelcomeWindow {
     #[template_callback]
     fn on_button_proceed_clicked(&self) {
         self.box_confirmation.set_visible(false);
+        let tweak_filename = match self.label_title.label().as_str() {
+            "System update" => "system_update.sh",
+            "Install virt-manager" => "virt_manager.sh",
+            "Oxidize your system" => "oxidize_system.sh",
+            _ => panic!(),
+        };
 
-        let tweak = &scripts_dir()
-            .join("system_update.sh")
+        let tweak_path = &scripts_dir()
+            .join(tweak_filename)
             .to_string_lossy()
             .to_string();
 
@@ -69,7 +88,7 @@ impl NoidWelcomeWindow {
             OsStr::new("pkexec"),
             OsStr::new("bash"),
             OsStr::new("-c"),
-            OsStr::new(tweak),
+            OsStr::new(tweak_path),
         ];
 
         let subprocess = gio::Subprocess::newv(
@@ -91,7 +110,7 @@ impl NoidWelcomeWindow {
                     window.imp().button_return.set_visible(true);
 
                     let buffer = window.imp().text_view_log.buffer();
-                    buffer.insert(&mut buffer.end_iter(), "System update complete\n");
+                    buffer.insert(&mut buffer.end_iter(), "Completed successfully\n");
                 }
             ),
         );
@@ -118,33 +137,67 @@ impl NoidWelcomeWindow {
     fn on_button_system_update_clicked(&self) {
         self.stack.set_visible_child_name("log");
         self.box_confirmation.set_visible(true);
+        self.label_title.set_label("System update");
 
-        self.text_view_log.buffer().set_text(
+        let buffer = self.text_view_log.buffer();
+
+        buffer.set_text(&HEADER);
+        buffer.insert(
+            &mut buffer.end_iter(),
             r#"
- _   _       _     _   _____                  _
-| \ | |     (_)   | | |_   _|                | |
-|  \| | ___  _  __| |   | |_      _____  __ _| | _____
-| . ` |/ _ \| |/ _` |   | \ \ /\ / / _ \/ _` | |/ / __|
-| |\  | (_) | | (_| |   | |\ V  V /  __/ (_| |   <\__ \
-\_| \_/\___/|_|\__,_|   \_/ \_/\_/ \___|\__,_|_|\_\___/
-
 This tweak will attempt to update your system using xbps package manager
+
 "#,
         );
     }
 
     #[template_callback]
     fn on_button_virt_manager_clicked(&self) {
-        let _ = std::process::Command::new(scripts_dir().join("virt_manager.sh"))
-            .spawn()
-            .expect("failed to update your system");
+        self.stack.set_visible_child_name("log");
+        self.box_confirmation.set_visible(true);
+        self.label_title.set_label("Install virt-manager");
+
+        let buffer = self.text_view_log.buffer();
+
+        buffer.set_text(&HEADER);
+        buffer.insert(
+            &mut buffer.end_iter(),
+            r#"
+This tweak will install virt-manager, in the process it will:
+- Install these deps: qemu, virt-manager, virt-viewer, dnsmasq, vde2,
+  bridge-utils, openbsd-netcat, libguestfs
+- Enable these Runit services: libvirtd, virtlogd
+- Modify these files: /etc/libvirt/libvirtd.conf, /etc/libvirt/qemu.conf
+- Add your user to the libvirt user group.
+
+And you will need to restart for changes to take effect.
+
+"#,
+        );
     }
 
     #[template_callback]
     fn on_button_oxidize_system_clicked(&self) {
-        let _ = std::process::Command::new(scripts_dir().join("oxidize_system.sh"))
-            .spawn()
-            .expect("failed to update your system");
+        self.stack.set_visible_child_name("log");
+        self.box_confirmation.set_visible(true);
+        self.label_title.set_label("Oxidize your system");
+
+        let buffer = self.text_view_log.buffer();
+
+        buffer.set_text(&HEADER);
+        buffer.insert(
+            &mut buffer.end_iter(),
+            r#"
+This tweak will install Rust and some useful CLIs, in the process it will:
+- Install rustup
+- Install these CLIs: ripgrep, bat, fd-find, zoxide, eza, tealdeer,
+  du-dust, bottom, cargo-update
+- Modify these files: ~/.zshrc, ~/.bashrc
+
+And you will need to restart for changes to take effect.
+
+"#,
+        );
     }
 }
 
