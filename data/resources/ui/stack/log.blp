@@ -28,18 +28,18 @@ template $StackPageLog: Box {
   
     Button button_cancel {
       hexpand: true;
-      label: "Cancel";
+      label: _("Cancel");
       clicked => $on_button_cancel_clicked() swapped;
     }
     Button button_proceed {
       hexpand: true;
-      label: "Proceed";
+      label: _("Proceed");
       clicked => $on_button_proceed_clicked() swapped;
     }
   }
 
   Button button_return {
-    label: "Return";
+    label: _("Return");
     visible: false;
     clicked => $on_button_return_clicked() swapped;
   }

@@ -25,20 +25,20 @@ template $StackPageMain: Box {
       valign: center;
   
       Label {
-        label: "Welcome to Noid GNU/Linux";
+        label: _("Welcome to Noid GNU/Linux");
         halign: start;
         styles ["title-1"]
       }
   
       Label {
-        label: "This tool provides quick access to software installation, system updates, and setup scripts for virtualization and Rust-based tools.";
+        label: _("This tool provides quick access to software installation, system updates, and setup scripts for virtualization and Rust-based tools.");
         halign: start;
         wrap: true;
         max-width-chars: 80;
       }
   
       Label {
-        label: "\nHave questions or feedback? Don't hesitate to reach out.";
+        label: _("\nHave questions or feedback? Don’t hesitate to reach out.");
         halign: start;
         wrap: true;
         max-width-chars: 80;
@@ -52,17 +52,17 @@ template $StackPageMain: Box {
     vexpand: true;
   
     Button button_system_update {
-      label: "System update";
+      label: _("System update");
       clicked => $on_button_system_update_clicked() swapped;
     }
   
     Button button_virt_manager {
-      label: "Install virt-manager";
+      label: _("Install virt-manager");
       clicked => $on_button_virt_manager_clicked() swapped;
     }
   
     Button button_oxidize_system {
-      label: "Oxidize your system";
+      label: _("Oxidize your system");
       clicked => $on_button_oxidize_system_clicked() swapped;
     }
   }
@@ -72,15 +72,15 @@ template $StackPageMain: Box {
     margin-top: 8;
   
     LinkButton {
-      label: "Source code";
+      label: _("Source code");
       uri: "https://forge.ch-naseem.com/noid-linux";
-      tooltip-text: "Source Code";
+      tooltip-text: _("Source Code");
     }
   
     LinkButton {
-      label: "Support";
+      label: _("Support");
       uri: "https://matrix.to/#/#noid-support:ch-naseem.com";
-      tooltip-text: "Support Matrix channel";
+      tooltip-text: _("Support Matrix channel");
     }
   
     Box {
@@ -89,7 +89,7 @@ template $StackPageMain: Box {
       spacing: 8;
   
       Label {
-        label: "Launch on startup";
+        label: _("Launch on startup");
         halign: start;
       }
   
