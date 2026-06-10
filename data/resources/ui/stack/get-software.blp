@@ -34,17 +34,11 @@ template $StackPageGetSoftware: Box {
 		ColumnView column_view_packages {
 			vexpand: true;
 
-			model: NoSelection {
+			model: MultiSelection selection_model_packages {
 				model: Gio.ListStore list_store_packages {
 					item-type: typeof<$PackageObject>;
 				};
 			};
-
-			ColumnViewColumn {
-				title: _("install");
-
-				factory: SignalListItemFactory factory_install {};
-			}
 
 			ColumnViewColumn {
 				title: _("icon");

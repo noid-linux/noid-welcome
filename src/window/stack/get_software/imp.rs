@@ -25,10 +25,10 @@ pub struct StackPageGetSoftware {
     pub column_view_packages: TemplateChild<gtk::ColumnView>,
 
     #[template_child]
-    pub list_store_packages: TemplateChild<gio::ListStore>,
+    pub selection_model_packages: TemplateChild<gtk::MultiSelection>,
 
     #[template_child]
-    pub factory_install: TemplateChild<gtk::SignalListItemFactory>,
+    pub list_store_packages: TemplateChild<gio::ListStore>,
 
     #[template_child]
     pub box_confirmation: TemplateChild<gtk::Box>,
@@ -63,6 +63,10 @@ impl StackPageGetSoftware {
             .map(|p| p.pkgname())
             .collect::<Vec<String>>()
             .join(" ");
+
+        if packages.trim().is_empty() {
+            return;
+        }
 
         let cmd = format!("xbps-install -S && xbps-install -y {packages}");
         let argv = &[
@@ -123,37 +127,12 @@ impl ObjectImpl for StackPageGetSoftware {
     fn constructed(&self) {
         self.parent_constructed();
 
-        let factory_install = &self.factory_install;
-
-        factory_install.connect_setup(|_, object| {
-            let list_item = object.downcast_ref::<gtk::ListItem>().unwrap();
-            let check_button = gtk::CheckButton::new();
-            list_item.set_child(Some(&check_button));
-        });
-
-        factory_install.connect_bind(|_, object| {
-            let list_item = object.downcast_ref::<gtk::ListItem>().unwrap();
-            let check_button = list_item
-                .child()
-                .and_downcast::<gtk::CheckButton>()
-                .unwrap();
-            let package = list_item.item().and_downcast::<PackageObject>().unwrap();
-
-            package
-                .bind_property("install", &check_button, "active")
-                .bidirectional()
-                .sync_create()
-                .build();
-        });
-
-        let list_store_packages = &self.list_store_packages;
-        list_store_packages.append(&PackageObject::new(
-            true,
-            "brave",
-            "Web browser that blocks ads and trackers by default",
-        ));
-
         let custom_packages: Vec<(bool, &str, &str)> = vec![
+            (
+                true,
+                "brave",
+                "Web browser that blocks ads and trackers by default",
+            ),
             (
                 false,
                 "brave-origin",
@@ -193,8 +172,23 @@ impl ObjectImpl for StackPageGetSoftware {
         ];
 
         custom_packages.iter().for_each(|pkg| {
-            list_store_packages.append(&PackageObject::new(pkg.0, pkg.1, pkg.2));
+            self.list_store_packages
+                .append(&PackageObject::new(pkg.0, pkg.1, pkg.2));
         });
+
+        let selection_model_packages = &self.selection_model_packages;
+
+        selection_model_packages.connect_selection_changed(|s, position, n_items| {
+            let bitset = s.selection();
+
+            for i in position..(position + n_items) {
+                let package = s.item(i).and_downcast::<PackageObject>().unwrap();
+
+                package.set_install(bitset.contains(i));
+            }
+        });
+
+        selection_model_packages.select_item(0, true);
     }
 
     fn signals() -> &'static [glib::subclass::Signal] {
