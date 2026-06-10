@@ -26,14 +26,18 @@ install: build
 	@for script in $(SCRIPTS); do \
 		install -m755 scripts/$$script.sh $(DESTDIR)$(LIBEXECDIR)/noid-welcome/scripts; \
 	done
-	install -Dm 644 data/resources/resources.gresource \
-		$(DESTDIR)$(SHAREDIR)/noid-welcome/resources.gresource
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) install -C $$dir ; \
+	done
 
 .PHONY: uninstall
 uninstall:
 	rm -f $(DESTDIR)$(BINDIR)/noid-welcome
 	rm -rf $(DESTDIR)$(LIBEXECDIR)/noid-welcome
 	rm -rf $(DESTDIR)$(SHAREDIR)/noid-welcome
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) uninstall -C $$dir ; \
+	done
 
 .PHONY: run
 run: build

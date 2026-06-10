@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=Noid Welcome
+Comment=Noid Linux Welcome Screen
+Categories=System;GTK;
+
+Icon=com.ch_naseem.NoidWelcome
+Exec=@BIN@
+Terminal=false

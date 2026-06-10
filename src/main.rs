@@ -29,7 +29,7 @@ use gtk::prelude::*;
 
 use config::PKGDATADIR;
 
-const APP_ID: &str = "com.ch-naseem.NoidWelcome";
+const APP_ID: &str = "com.ch_naseem.NoidWelcome";
 
 fn main() -> glib::ExitCode {
     let resources = gio::Resource::load(format!("{}/resources.gresource", PKGDATADIR))

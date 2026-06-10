@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.ch_naseem.NoidWelcome</id>
+  <name>Noid Welcome</name>
+  <summary>Noid Linux Welcome Screen</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <description>
+    <p>Noid Welcome provides quick access to software installation,
+system updates, and setup scripts for Noid GNU/Linux.</p>
+  </description>
+  <url type="homepage">https://forge.ch-naseem.com/noid-linux/noid-welcome</url>
+  <url type="vcs-browser">https://forge.ch-naseem.com/noid-linux/noid-welcome</url>
+  <url type="bugtracker">https://github.com/noid-linux/noid-welcome/issues</url>
+  <url type="donation">https://noid-linux.github.io/donate/</url>
+  <url type="contact">https://matrix.to/#/#noid-support:ch-naseem.com</url>
+  <launchable type="desktop-id">com.ch_naseem.NoidWelcome.desktop</launchable>
+</component>

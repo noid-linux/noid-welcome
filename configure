@@ -135,6 +135,10 @@ for script in scripts/*.sh.in; do
 		${script} > scripts/$(basename -s .in $script)
 done
 
+sed \
+	-e "s|@BIN@|$BINDIR/noid-welcome|" \
+	data/com.ch_naseem.NoidWelcome.desktop.in > data/com.ch_naseem.NoidWelcome.desktop
+
 echo
 echo "  Noid Welcome has been configured with the following options:"
 echo
