@@ -3,16 +3,13 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use std::cell::{Cell, RefCell};
+use std::cell::RefCell;
 
 use super::*;
 
 #[derive(Debug, Default, glib::Properties)]
 #[properties(wrapper_type = super::PackageObject)]
 pub struct PackageObject {
-    #[property(get, set)]
-    install: Cell<bool>,
-
     #[property(get, set)]
     icon: RefCell<String>,
 

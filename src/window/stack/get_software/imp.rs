@@ -55,12 +55,15 @@ impl StackPageGetSoftware {
 
     #[template_callback]
     fn on_button_proceed_clicked(&self) {
+        let bitset = self.selection_model_packages.selection();
+
         let packages = self
             .list_store_packages
             .into_iter()
-            .map(|p| p.unwrap().downcast::<PackageObject>().unwrap())
-            .filter(|p| p.install())
-            .map(|p| p.pkgname())
+            .map(|p| p.unwrap().downcast::<PackageObject>().unwrap().pkgname())
+            .enumerate()
+            .filter(|(i, _)| bitset.contains(*i as u32))
+            .map(|(_, p)| p)
             .collect::<Vec<String>>()
             .join(" ");
 
@@ -127,45 +130,31 @@ impl ObjectImpl for StackPageGetSoftware {
     fn constructed(&self) {
         self.parent_constructed();
 
-        let custom_packages: Vec<(bool, &str, &str)> = vec![
+        let custom_packages: Vec<(&str, &str)> = vec![
             (
-                true,
                 "brave",
                 "Web browser that blocks ads and trackers by default",
             ),
             (
-                false,
                 "brave-origin",
                 "Minimalist browser from the makers of Brave",
             ),
             (
-                false,
                 "librewolf",
                 "Fork of Firefox, focused on privacy, security and freedom",
             ),
+            ("cinny-desktop", "Yet another matrix client for desktop"),
             (
-                false,
-                "cinny-desktop",
-                "Yet another matrix client for desktop",
-            ),
-            (
-                false,
                 "freetube",
                 "Open source desktop YouTube player built with privacy in mind",
             ),
             (
-                false,
                 "grayjay",
                 "Stream and download content from various sources",
             ),
+            ("spotify-client", "Proprietary music streaming client"),
+            ("discord", "Chat and VOIP application"),
             (
-                false,
-                "spotify-client",
-                "Proprietary music streaming client",
-            ),
-            (false, "discord", "Chat and VOIP application"),
-            (
-                false,
                 "obsidian",
                 "Private and flexible writing app that adapts to the way you think",
             ),
@@ -173,22 +162,10 @@ impl ObjectImpl for StackPageGetSoftware {
 
         custom_packages.iter().for_each(|pkg| {
             self.list_store_packages
-                .append(&PackageObject::new(pkg.0, pkg.1, pkg.2));
+                .append(&PackageObject::new(pkg.0, pkg.1));
         });
 
-        let selection_model_packages = &self.selection_model_packages;
-
-        selection_model_packages.connect_selection_changed(|s, position, n_items| {
-            let bitset = s.selection();
-
-            for i in position..(position + n_items) {
-                let package = s.item(i).and_downcast::<PackageObject>().unwrap();
-
-                package.set_install(bitset.contains(i));
-            }
-        });
-
-        selection_model_packages.select_item(0, true);
+        self.selection_model_packages.select_item(0, true);
     }
 
     fn signals() -> &'static [glib::subclass::Signal] {

@@ -14,9 +14,8 @@ glib::wrapper! {
 }
 
 impl PackageObject {
-    pub fn new(install: bool, pkgname: &str, short_desc: &str) -> Self {
+    pub fn new(pkgname: &str, short_desc: &str) -> Self {
         glib::Object::builder()
-            .property("install", install)
             .property(
                 "icon",
                 format!("/com/ch-naseem/NoidWelcome/images/packages/{pkgname}.svg"),
