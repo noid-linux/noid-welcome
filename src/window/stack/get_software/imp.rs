@@ -16,9 +16,6 @@ use super::*;
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/stack/get-software.ui")]
 pub struct StackPageGetSoftware {
     #[template_child]
-    pub label_title: TemplateChild<gtk::Label>,
-
-    #[template_child]
     pub text_view_log: TemplateChild<gtk::TextView>,
 
     #[template_child]

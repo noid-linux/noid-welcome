@@ -1,46 +1,42 @@
 using Gtk 4.0;
 
 template $StackPageLog: Box {
-  orientation: vertical;
-  margin-top: 20;
-  margin-bottom: 20;
-  margin-start: 20;
-  margin-end: 20;
-  spacing: 8;
-  
-  Label label_title {
-    margin-bottom: 10;
-    styles ["title-3"]
-  }
+	orientation: vertical;
+	margin-top: 20;
+	margin-bottom: 20;
+	margin-start: 20;
+	margin-end: 20;
+	spacing: 8;
 
-  ScrolledWindow {
-    vexpand: true;
-  
-    TextView text_view_log {
-      editable: false;
-      cursor-visible: false;
-    }
-  }
+	ScrolledWindow {
+		vexpand: true;
 
-  Box box_confirmation {
-    hexpand: true;
-    spacing: 8;
-  
-    Button button_cancel {
-      hexpand: true;
-      label: _("Cancel");
-      clicked => $on_button_cancel_clicked() swapped;
-    }
-    Button button_proceed {
-      hexpand: true;
-      label: _("Proceed");
-      clicked => $on_button_proceed_clicked() swapped;
-    }
-  }
+		TextView text_view_log {
+			editable: false;
+			cursor-visible: false;
+		}
+	}
 
-  Button button_return {
-    label: _("Return");
-    visible: false;
-    clicked => $on_button_return_clicked() swapped;
-  }
+	Box box_confirmation {
+		hexpand: true;
+		spacing: 8;
+
+		Button button_cancel {
+			hexpand: true;
+			label: _("Cancel");
+			clicked => $on_button_cancel_clicked() swapped;
+		}
+
+		Button button_proceed {
+			hexpand: true;
+			label: _("Proceed");
+			clicked => $on_button_proceed_clicked() swapped;
+		}
+	}
+
+	Button button_return {
+		label: _("Return");
+		visible: false;
+		clicked => $on_button_return_clicked() swapped;
+	}
 }

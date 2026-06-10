@@ -1,29 +1,40 @@
 using Gtk 4.0;
 
 template $NoidWelcomeWindow: ApplicationWindow {
-  title: _("Welcome to Noid Linux");
-  default-width: 1000;
-  default-height: 600;
-  resizable: false;
+	title: _("Welcome to Noid Linux");
+	default-width: 1000;
+	default-height: 600;
+	resizable: false;
 
-  child: Stack stack {
-    StackPage {
-      name: "main";
-      child: ScrolledWindow {
-        child: $StackPageMain stack_page_main {};
-      };
-    }
-    StackPage {
-      name: "log";
-      child: ScrolledWindow {
-        child: $StackPageLog stack_page_log {};
-      };
-    }
-    StackPage {
-      name: "get-software";
-      child: ScrolledWindow {
-        child: $StackPageGetSoftware stack_page_get_software {};
-      };
-    }
-  };
+	titlebar: HeaderBar {
+		title-widget: Label header_label {
+			label: _("Welcome to Noid Linux");
+		};
+	};
+
+	child: Stack stack {
+		StackPage {
+			name: "main";
+
+			child: ScrolledWindow {
+				child: $StackPageMain stack_page_main {};
+			};
+		}
+
+		StackPage {
+			name: "log";
+
+			child: ScrolledWindow {
+				child: $StackPageLog stack_page_log {};
+			};
+		}
+
+		StackPage {
+			name: "get-software";
+
+			child: ScrolledWindow {
+				child: $StackPageGetSoftware stack_page_get_software {};
+			};
+		}
+	};
 }

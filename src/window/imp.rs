@@ -18,6 +18,9 @@ const HEADER: &str = r#"
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
 pub struct NoidWelcomeWindow {
     #[template_child]
+    pub header_label: TemplateChild<gtk::Label>,
+
+    #[template_child]
     pub stack: TemplateChild<gtk::Stack>,
 
     #[template_child]
@@ -58,7 +61,7 @@ impl ObjectImpl for NoidWelcomeWindow {
 
                 window.stack.set_visible_child_name("log");
                 stack_page_log.box_confirmation.set_visible(true);
-                stack_page_log.label_title.set_label(title);
+                window.header_label.set_label(title);
 
                 let buffer = stack_page_log.text_view_log.buffer();
                 buffer.set_text(HEADER);
@@ -68,25 +71,38 @@ impl ObjectImpl for NoidWelcomeWindow {
 
         self.stack_page_main.connect_navigate(glib::clone!(
             #[weak(rename_to = window)]
-            self.obj(),
+            self,
             move |_widget, stackpage| {
-                window.imp().stack.set_visible_child_name(stackpage);
+                match stackpage {
+                    "get-software" => window.obj().set_header_label(Some("Get software")),
+                    _ => window.obj().set_header_label(None),
+                }
+
+                window.stack.set_visible_child_name(stackpage);
             }
         ));
 
         self.stack_page_log.connect_navigate(glib::clone!(
             #[weak(rename_to = window)]
-            self.obj(),
+            self,
             move |_, stackpage| {
-                window.imp().stack.set_visible_child_name(stackpage);
+                if stackpage == "main" {
+                    window.obj().set_header_label(None);
+                }
+
+                window.stack.set_visible_child_name(stackpage);
             }
         ));
 
         self.stack_page_get_software.connect_navigate(glib::clone!(
             #[weak(rename_to = window)]
-            self.obj(),
+            self,
             move |_, stackpage| {
-                window.imp().stack.set_visible_child_name(stackpage);
+                if stackpage == "main" {
+                    window.obj().set_header_label(None);
+                }
+
+                window.stack.set_visible_child_name(stackpage);
             }
         ));
     }

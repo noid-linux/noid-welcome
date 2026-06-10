@@ -7,16 +7,16 @@ use std::{ffi::OsStr, sync::LazyLock};
 
 use gio::glib::subclass::Signal;
 
-use crate::util::{read_line_utf8_async_to_buffer, scripts_dir};
+use crate::{
+    util::{read_line_utf8_async_to_buffer, scripts_dir},
+    window::NoidWelcomeWindow,
+};
 
 use super::*;
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/stack/log.ui")]
 pub struct StackPageLog {
-    #[template_child]
-    pub label_title: TemplateChild<gtk::Label>,
-
     #[template_child]
     pub text_view_log: TemplateChild<gtk::TextView>,
 
@@ -34,7 +34,6 @@ impl StackPageLog {
         self.obj().emit_by_name::<()>("navigate", &[&"main"]);
 
         self.text_view_log.buffer().set_text("");
-        self.label_title.set_label("");
         self.button_return.set_visible(false)
     }
 
@@ -50,7 +49,16 @@ impl StackPageLog {
     #[template_callback]
     fn on_button_proceed_clicked(&self) {
         self.box_confirmation.set_visible(false);
-        let tweak_filename = match self.label_title.label().as_str() {
+
+        let window = &self
+            .obj()
+            .root()
+            .and_downcast::<NoidWelcomeWindow>()
+            .unwrap();
+
+        let header_label = &window.imp().header_label;
+
+        let tweak_filename = match header_label.label().as_str() {
             "System update" => "system_update.sh",
             "Install virt-manager" => "virt_manager.sh",
             "Oxidize your system" => "oxidize_system.sh",
