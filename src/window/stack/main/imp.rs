@@ -6,8 +6,9 @@
 use std::sync::LazyLock;
 
 use gio::glib::subclass::Signal;
+use gtk::prelude::WidgetExt;
 
-use crate::util::autostart_file;
+use crate::{util::autostart_file, window::NoidWelcomeWindow};
 
 use super::*;
 
@@ -34,8 +35,13 @@ pub struct StackPageMain {
 impl StackPageMain {
     #[template_callback]
     fn on_button_get_software_clicked(&self) {
-        self.obj()
-            .emit_by_name::<()>("navigate", &[&"get-software"])
+        let window = self
+            .obj()
+            .root()
+            .and_downcast::<NoidWelcomeWindow>()
+            .unwrap();
+
+        window.emit_by_name::<()>("navigate", &[&"get-software"])
     }
 
     #[template_callback]
@@ -138,9 +144,6 @@ impl ObjectImpl for StackPageMain {
             vec![
                 Signal::builder("run-tweak")
                     .param_types([String::static_type(), String::static_type()])
-                    .build(),
-                Signal::builder("navigate")
-                    .param_types([String::static_type()])
                     .build(),
             ]
         });

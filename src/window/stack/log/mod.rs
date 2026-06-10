@@ -14,15 +14,3 @@ glib::wrapper! {
         @extends gtk::Widget, gtk::Box,
         @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
-
-impl StackPageLog {
-    pub fn connect_navigate<F: Fn(&Self, &str) + 'static>(&self, f: F) -> glib::SignalHandlerId {
-        self.connect_closure(
-            "navigate",
-            true,
-            glib::closure_local!(move |obj: Self, stackpage: &str| {
-                f(&obj, stackpage);
-            }),
-        )
-    }
-}

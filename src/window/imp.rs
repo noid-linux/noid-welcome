@@ -3,6 +3,10 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
+use std::sync::LazyLock;
+
+use gio::glib::subclass::Signal;
+
 use super::*;
 
 const HEADER: &str = r#"
@@ -69,7 +73,7 @@ impl ObjectImpl for NoidWelcomeWindow {
             }
         ));
 
-        self.stack_page_main.connect_navigate(glib::clone!(
+        self.obj().connect_navigate(glib::clone!(
             #[weak(rename_to = window)]
             self,
             move |_widget, stackpage| {
@@ -81,30 +85,18 @@ impl ObjectImpl for NoidWelcomeWindow {
                 window.stack.set_visible_child_name(stackpage);
             }
         ));
+    }
 
-        self.stack_page_log.connect_navigate(glib::clone!(
-            #[weak(rename_to = window)]
-            self,
-            move |_, stackpage| {
-                if stackpage == "main" {
-                    window.obj().set_header_label(None);
-                }
+    fn signals() -> &'static [glib::subclass::Signal] {
+        static SIGNALS: LazyLock<Vec<Signal>> = LazyLock::new(|| {
+            vec![
+                Signal::builder("navigate")
+                    .param_types([String::static_type()])
+                    .build(),
+            ]
+        });
 
-                window.stack.set_visible_child_name(stackpage);
-            }
-        ));
-
-        self.stack_page_get_software.connect_navigate(glib::clone!(
-            #[weak(rename_to = window)]
-            self,
-            move |_, stackpage| {
-                if stackpage == "main" {
-                    window.obj().set_header_label(None);
-                }
-
-                window.stack.set_visible_child_name(stackpage);
-            }
-        ));
+        SIGNALS.as_ref()
     }
 }
 

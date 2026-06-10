@@ -40,4 +40,14 @@ impl NoidWelcomeWindow {
             header_label.set_label(title.as_str());
         }
     }
+
+    pub fn connect_navigate<F: Fn(&Self, &str) + 'static>(&self, f: F) -> glib::SignalHandlerId {
+        self.connect_closure(
+            "navigate",
+            true,
+            glib::closure_local!(move |obj: Self, stackpage: &str| {
+                f(&obj, stackpage);
+            }),
+        )
+    }
 }

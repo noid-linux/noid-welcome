@@ -20,15 +20,6 @@ glib::wrapper! {
 }
 
 impl StackPageGetSoftware {
-    pub fn connect_navigate<F: Fn(&Self, &str) + 'static>(&self, f: F) -> glib::SignalHandlerId {
-        self.connect_closure(
-            "navigate",
-            true,
-            glib::closure_local!(move |obj: Self, stackpage: &str| {
-                f(&obj, stackpage);
-            }),
-        )
-    }
     pub fn toggle_column_view(&self) {
         let column_view_packages = &self.imp().column_view_packages;
         let scrolled_window_packages = column_view_packages
