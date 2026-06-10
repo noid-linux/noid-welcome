@@ -1,5 +1,7 @@
 -include config.mk
 
+SUBDIRS = data
+
 BIN ?= target/debug/noid-welcome
 SCRIPTS = \
 	oxidize_system \
@@ -10,25 +12,11 @@ SCRIPTS = \
 CARGO ?= cargo
 CARGO_OPTS ?=
 
-data/resources/ui/window.ui: data/resources/ui/window.blp
-	blueprint-compiler compile --output data/resources/ui/window.ui \
-		data/resources/ui/window.blp
-
-data/resources/ui/stack/main.ui: data/resources/ui/stack/main.blp
-	blueprint-compiler compile --output data/resources/ui/stack/main.ui \
-		data/resources/ui/stack/main.blp
-
-data/resources/ui/stack/log.ui: data/resources/ui/stack/log.blp
-	blueprint-compiler compile --output data/resources/ui/stack/log.ui \
-		data/resources/ui/stack/log.blp
-
-data/resources/resources.gresource: data/resources/resources.gresource.xml data/resources/ui/window.ui data/resources/ui/stack/main.ui data/resources/ui/stack/log.ui
-	glib-compile-resources --sourcedir data/resources \
-		data/resources/resources.gresource.xml \
-		--target data/resources/resources.gresource
-
 .PHONY: build
-build: data/resources/resources.gresource
+build:
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir ; \
+	done
 	$(CARGO) build $(CARGO_OPTS)
 
 .PHONY: install
@@ -53,8 +41,9 @@ run: build
 
 .PHONY: clean
 clean:
-	rm -f data/resources/ui/window.ui
-	rm -rf data/resources/resources.gresource
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) clean -C $$dir ; \
+	done
 	rm -f src/config.rs
 	rm -f config.mk
 	@for script in $(SCRIPTS); do \

@@ -51,6 +51,11 @@ template $StackPageMain: Box {
     spacing: 8;
     vexpand: true;
   
+    Button button_get_software {
+      label: _("Get software");
+      clicked => $on_button_get_software_clicked() swapped;
+    }
+
     Button button_system_update {
       label: _("System update");
       clicked => $on_button_system_update_clicked() swapped;

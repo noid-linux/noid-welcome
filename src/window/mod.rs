@@ -7,7 +7,11 @@ use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use gtk::{gio, glib};
 
-pub use stack::{log::StackPageLog, main::StackPageMain};
+pub use stack::{
+    get_software::{PackageObject, StackPageGetSoftware},
+    log::StackPageLog,
+    main::StackPageMain,
+};
 
 mod imp;
 mod stack;

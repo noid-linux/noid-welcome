@@ -1,0 +1,112 @@
+using Gtk 4.0;
+using Gio 2.0;
+
+template $StackPageGetSoftware: Box {
+	orientation: vertical;
+	spacing: 8;
+	margin-top: 20;
+	margin-bottom: 20;
+	margin-start: 20;
+	margin-end: 20;
+
+	Label label_title {
+		label: _("Get software");
+		margin-bottom: 10;
+
+		styles [
+			"title-3",
+		]
+	}
+
+	ScrolledWindow {
+		vexpand: true;
+		visible: false;
+
+		TextView text_view_log {
+			editable: false;
+			cursor-visible: false;
+		}
+	}
+
+	ScrolledWindow {
+		vexpand: true;
+
+		ColumnView column_view_packages {
+			vexpand: true;
+
+			model: NoSelection {
+				model: Gio.ListStore list_store_packages {
+					item-type: typeof<$PackageObject>;
+				};
+			};
+
+			ColumnViewColumn {
+				title: _("install");
+
+				factory: SignalListItemFactory factory_install {};
+			}
+
+			ColumnViewColumn {
+				title: _("icon");
+
+				factory: BuilderListItemFactory {
+					template ListItem {
+						child: Image {
+							resource: bind template.item as <$PackageObject>.icon;
+							pixel-size: 48;
+						};
+					}
+				};
+			}
+
+			ColumnViewColumn {
+				title: _("pkgname");
+
+				factory: BuilderListItemFactory {
+					template ListItem {
+						child: Label {
+							halign: start;
+							label: bind template.item as <$PackageObject>.pkgname;
+						};
+					}
+				};
+			}
+
+			ColumnViewColumn {
+				title: _("short_desc");
+
+				factory: BuilderListItemFactory {
+					template ListItem {
+						child: Label {
+							halign: start;
+							label: bind template.item as <$PackageObject>.short_desc;
+						};
+					}
+				};
+			}
+		}
+	}
+
+	Box box_confirmation {
+		hexpand: true;
+		spacing: 8;
+
+		Button button_cancel {
+			hexpand: true;
+			label: _("Cancel");
+			clicked => $on_button_cancel_clicked() swapped;
+		}
+
+		Button button_proceed {
+			hexpand: true;
+			label: _("Proceed");
+			clicked => $on_button_proceed_clicked() swapped;
+		}
+	}
+
+	Button button_return {
+		label: _("Return");
+		visible: false;
+		clicked => $on_button_return_clicked() swapped;
+	}
+}

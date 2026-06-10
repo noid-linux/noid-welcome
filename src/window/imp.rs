@@ -25,6 +25,9 @@ pub struct NoidWelcomeWindow {
 
     #[template_child]
     pub stack_page_log: TemplateChild<StackPageLog>,
+
+    #[template_child]
+    pub stack_page_get_software: TemplateChild<StackPageGetSoftware>,
 }
 
 #[glib::object_subclass]
@@ -63,11 +66,27 @@ impl ObjectImpl for NoidWelcomeWindow {
             }
         ));
 
-        self.stack_page_log.connect_return(glib::clone!(
+        self.stack_page_main.connect_navigate(glib::clone!(
             #[weak(rename_to = window)]
             self.obj(),
-            move |_widget| {
-                window.imp().stack.set_visible_child_name("main");
+            move |_widget, stackpage| {
+                window.imp().stack.set_visible_child_name(stackpage);
+            }
+        ));
+
+        self.stack_page_log.connect_navigate(glib::clone!(
+            #[weak(rename_to = window)]
+            self.obj(),
+            move |_, stackpage| {
+                window.imp().stack.set_visible_child_name(stackpage);
+            }
+        ));
+
+        self.stack_page_get_software.connect_navigate(glib::clone!(
+            #[weak(rename_to = window)]
+            self.obj(),
+            move |_, stackpage| {
+                window.imp().stack.set_visible_child_name(stackpage);
             }
         ));
     }

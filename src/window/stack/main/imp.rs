@@ -18,6 +18,9 @@ pub struct StackPageMain {
     pub switch_autostart: TemplateChild<gtk::Switch>,
 
     #[template_child]
+    pub button_get_software: TemplateChild<gtk::Button>,
+
+    #[template_child]
     pub button_system_update: TemplateChild<gtk::Button>,
 
     #[template_child]
@@ -29,6 +32,12 @@ pub struct StackPageMain {
 
 #[gtk::template_callbacks]
 impl StackPageMain {
+    #[template_callback]
+    fn on_button_get_software_clicked(&self) {
+        self.obj()
+            .emit_by_name::<()>("navigate", &[&"get-software"])
+    }
+
     #[template_callback]
     fn on_button_system_update_clicked(&self) {
         self.obj().emit_by_name::<()>(
@@ -129,6 +138,9 @@ impl ObjectImpl for StackPageMain {
             vec![
                 Signal::builder("run-tweak")
                     .param_types([String::static_type(), String::static_type()])
+                    .build(),
+                Signal::builder("navigate")
+                    .param_types([String::static_type()])
                     .build(),
             ]
         });

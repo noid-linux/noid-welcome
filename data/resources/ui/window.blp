@@ -19,5 +19,11 @@ template $NoidWelcomeWindow: ApplicationWindow {
         child: $StackPageLog stack_page_log {};
       };
     }
+    StackPage {
+      name: "get-software";
+      child: ScrolledWindow {
+        child: $StackPageGetSoftware stack_page_get_software {};
+      };
+    }
   };
 }

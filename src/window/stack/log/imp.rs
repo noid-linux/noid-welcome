@@ -31,7 +31,7 @@ pub struct StackPageLog {
 impl StackPageLog {
     #[template_callback]
     fn on_button_return_clicked(&self) {
-        self.obj().emit_by_name::<()>("return", &[]);
+        self.obj().emit_by_name::<()>("navigate", &[&"main"]);
 
         self.text_view_log.buffer().set_text("");
         self.label_title.set_label("");
@@ -117,8 +117,13 @@ impl ObjectImpl for StackPageLog {
     }
 
     fn signals() -> &'static [glib::subclass::Signal] {
-        static SIGNALS: LazyLock<Vec<Signal>> =
-            LazyLock::new(|| vec![Signal::builder("return").build()]);
+        static SIGNALS: LazyLock<Vec<Signal>> = LazyLock::new(|| {
+            vec![
+                Signal::builder("navigate")
+                    .param_types([String::static_type()])
+                    .build(),
+            ]
+        });
 
         SIGNALS.as_ref()
     }

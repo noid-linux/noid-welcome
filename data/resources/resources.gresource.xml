@@ -5,6 +5,16 @@
     <file>ui/window.ui</file>
     <file>ui/stack/main.ui</file>
     <file>ui/stack/log.ui</file>
+    <file>ui/stack/get-software.ui</file>
     <file>images/logo.png</file>
+    <file>images/packages/brave-origin.svg</file>
+    <file>images/packages/brave.svg</file>
+    <file>images/packages/cinny-desktop.svg</file>
+    <file>images/packages/discord.svg</file>
+    <file>images/packages/freetube.svg</file>
+    <file>images/packages/grayjay.svg</file>
+    <file>images/packages/librewolf.svg</file>
+    <file>images/packages/obsidian.svg</file>
+    <file>images/packages/spotify-client.svg</file>
   </gresource>
 </gresources>
