@@ -73,7 +73,7 @@ template $StackPageGetSoftware: Box {
 	}
 
 	Box box_confirmation {
-		hexpand: true;
+		height-request: 48;
 		spacing: 8;
 
 		Button button_cancel {
@@ -91,6 +91,7 @@ template $StackPageGetSoftware: Box {
 
 	Button button_return {
 		label: _("Return");
+		height-request: 48;
 		visible: false;
 		clicked => $on_button_return_clicked() swapped;
 	}
