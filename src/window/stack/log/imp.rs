@@ -3,12 +3,9 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use std::ffi::OsStr;
+use std::cell::RefCell;
 
-use crate::{
-    util::{read_line_utf8_async_to_buffer, scripts_dir},
-    window::NoidWelcomeWindow,
-};
+use crate::window::NoidWelcomeWindow;
 
 use super::*;
 
@@ -23,6 +20,8 @@ pub struct StackPageLog {
 
     #[template_child]
     pub button_return: TemplateChild<gtk::Button>,
+
+    pub current_tweak: RefCell<Option<Tweak>>,
 }
 
 #[gtk::template_callbacks]
@@ -52,58 +51,8 @@ impl StackPageLog {
 
     #[template_callback]
     fn on_button_proceed_clicked(&self) {
-        self.box_confirmation.set_visible(false);
-
-        let window = &self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
-
-        let header_label = &window.imp().header_label;
-
-        let tweak_filename = match header_label.label().as_str() {
-            "System update" => "system_update.sh",
-            "Install virt-manager" => "virt_manager.sh",
-            "Oxidize your system" => "oxidize_system.sh",
-            _ => panic!(),
-        };
-
-        let tweak_path = &scripts_dir()
-            .join(tweak_filename)
-            .to_string_lossy()
-            .to_string();
-
-        let argv = &[
-            OsStr::new("pkexec"),
-            OsStr::new("bash"),
-            OsStr::new("-c"),
-            OsStr::new(tweak_path),
-        ];
-
-        let subprocess = gio::Subprocess::newv(
-            argv,
-            gio::SubprocessFlags::STDOUT_PIPE.union(gio::SubprocessFlags::STDERR_MERGE),
-        )
-        .unwrap();
-        let stream = gio::DataInputStream::new(&subprocess.stdout_pipe().unwrap());
-
-        let buffer = self.text_view_log.buffer();
-
-        read_line_utf8_async_to_buffer(
-            stream,
-            buffer,
-            glib::clone!(
-                #[strong(rename_to = window)]
-                self.obj(),
-                move || {
-                    window.imp().button_return.set_visible(true);
-
-                    let buffer = window.imp().text_view_log.buffer();
-                    buffer.insert(&mut buffer.end_iter(), "Completed successfully\n");
-                }
-            ),
-        );
+        let current_tweak = self.current_tweak.borrow().unwrap();
+        current_tweak.run(&self.obj());
     }
 }
 

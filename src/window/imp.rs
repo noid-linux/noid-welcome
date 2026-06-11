@@ -9,15 +9,6 @@ use gio::glib::subclass::Signal;
 
 use super::*;
 
-const HEADER: &str = r#"
- _   _       _     _   _____                  _
-| \ | |     (_)   | | |_   _|                | |
-|  \| | ___  _  __| |   | |_      _____  __ _| | _____
-| . ` |/ _ \| |/ _` |   | \ \ /\ / / _ \/ _` | |/ / __|
-| |\  | (_) | | (_| |   | |\ V  V /  __/ (_| |   <\__ \
-\_| \_/\___/|_|\__,_|   \_/ \_/\_/ \___|\__,_|_|\_\___/
-"#;
-
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
 pub struct NoidWelcomeWindow {
@@ -55,23 +46,6 @@ impl ObjectSubclass for NoidWelcomeWindow {
 impl ObjectImpl for NoidWelcomeWindow {
     fn constructed(&self) {
         self.parent_constructed();
-
-        self.stack_page_main.connect_run_tweak(glib::clone!(
-            #[weak(rename_to = window)]
-            self.obj(),
-            move |_widget, title, summary| {
-                let window = window.imp();
-                let stack_page_log = window.stack_page_log.imp();
-
-                window.stack.set_visible_child_name("log");
-                stack_page_log.box_confirmation.set_visible(true);
-                window.header_label.set_label(title);
-
-                let buffer = stack_page_log.text_view_log.buffer();
-                buffer.set_text(HEADER);
-                buffer.insert(&mut buffer.end_iter(), summary);
-            }
-        ));
 
         self.obj().connect_navigate(glib::clone!(
             #[weak(rename_to = window)]

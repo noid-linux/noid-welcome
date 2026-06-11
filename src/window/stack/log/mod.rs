@@ -7,10 +7,18 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
+use crate::tweak::Tweak;
+
 mod imp;
 
 glib::wrapper! {
     pub struct StackPageLog(ObjectSubclass<imp::StackPageLog>)
         @extends gtk::Widget, gtk::Box,
         @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
+}
+
+impl StackPageLog {
+    pub fn set_tweak(&self, tweak: Tweak) {
+        *self.imp().current_tweak.borrow_mut() = Some(tweak)
+    }
 }

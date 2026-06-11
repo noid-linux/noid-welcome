@@ -3,12 +3,9 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use std::sync::LazyLock;
-
-use gio::glib::subclass::Signal;
 use gtk::prelude::WidgetExt;
 
-use crate::{util::autostart_file, window::NoidWelcomeWindow};
+use crate::{tweak::Tweak, util::autostart_file, window::NoidWelcomeWindow};
 
 use super::*;
 
@@ -46,55 +43,35 @@ impl StackPageMain {
 
     #[template_callback]
     fn on_button_system_update_clicked(&self) {
-        self.obj().emit_by_name::<()>(
-            "run-tweak",
-            &[
-                &"System update",
-                &r#"
-This tweak will attempt to update your system using xbps package manager
+        let window = self
+            .obj()
+            .root()
+            .and_downcast::<NoidWelcomeWindow>()
+            .unwrap();
 
-"#,
-            ],
-        );
+        Tweak::SystemUpdate.prompt(&window);
     }
 
     #[template_callback]
     fn on_button_virt_manager_clicked(&self) {
-        self.obj().emit_by_name::<()>(
-            "run-tweak",
-            &[
-                &"Install virt-manager",
-                &r#"
-This tweak will install virt-manager, in the process it will:
-- Install these deps: qemu, virt-manager, virt-viewer, dnsmasq, vde2,
-  bridge-utils, openbsd-netcat, libguestfs
-- Enable these Runit services: libvirtd, virtlogd
-- Modify these files: /etc/libvirt/libvirtd.conf, /etc/libvirt/qemu.conf
-- Add your user to the libvirt user group.
-                                                                        
-And you will need to restart for changes to take effect.
+        let window = self
+            .obj()
+            .root()
+            .and_downcast::<NoidWelcomeWindow>()
+            .unwrap();
 
-"#,
-            ],
-        );
+        Tweak::VirtManager.prompt(&window);
     }
 
     #[template_callback]
     fn on_button_oxidize_system_clicked(&self) {
-        self.obj().emit_by_name::<()>(
-            "run-tweak",
-            &[
-                &"Oxidize your system",
-                &r#"
-This tweak will install Rust and some useful CLIs, in the process it will:
-- Install rustup
-- Install these CLIs: ripgrep, bat, fd-find, zoxide, eza, tealdeer,
-  du-dust, bottom, cargo-update
-- Modify these files: ~/.zshrc, ~/.bashrc
+        let window = self
+            .obj()
+            .root()
+            .and_downcast::<NoidWelcomeWindow>()
+            .unwrap();
 
-"#,
-            ],
-        );
+        Tweak::OxidizeSystem.prompt(&window);
     }
 
     #[template_callback]
@@ -137,18 +114,6 @@ impl ObjectImpl for StackPageMain {
 
         // Handle autostart
         self.switch_autostart.set_active(autostart_file().exists());
-    }
-
-    fn signals() -> &'static [glib::subclass::Signal] {
-        static SIGNALS: LazyLock<Vec<Signal>> = LazyLock::new(|| {
-            vec![
-                Signal::builder("run-tweak")
-                    .param_types([String::static_type(), String::static_type()])
-                    .build(),
-            ]
-        });
-
-        SIGNALS.as_ref()
     }
 }
 

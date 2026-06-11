@@ -14,18 +14,3 @@ glib::wrapper! {
         @extends gtk::Widget, gtk::Box,
         @implements gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible;
 }
-
-impl StackPageMain {
-    pub fn connect_run_tweak<F: Fn(&Self, &str, &str) + 'static>(
-        &self,
-        f: F,
-    ) -> glib::SignalHandlerId {
-        self.connect_closure(
-            "run-tweak",
-            true,
-            glib::closure_local!(move |obj: Self, title: &str, summary: &str| {
-                f(&obj, title, summary);
-            }),
-        )
-    }
-}
