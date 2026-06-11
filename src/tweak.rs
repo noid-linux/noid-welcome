@@ -5,17 +5,10 @@
 
 use std::ffi::OsStr;
 
-use gio::glib::{
-    self,
-    object::ObjectExt,
-    subclass::types::{ObjectSubclassExt, ObjectSubclassIsExt},
-};
+use gio::glib;
 use gtk::prelude::*;
 
-use crate::{
-    util::{read_line_utf8_async_to_buffer, scripts_dir},
-    window::{NoidWelcomeWindow, StackPageLog},
-};
+use crate::util::{read_line_utf8_async_to_buffer, scripts_dir};
 
 const HEADER: &str = r#"
  _   _       _     _   _____                  _
@@ -33,8 +26,15 @@ pub enum Tweak {
     OxidizeSystem,
 }
 
+pub trait TweakLogger: glib::clone::Downgrade {
+    fn set_tweak(&self, tweak: Tweak);
+    fn show_confirmation(&self);
+    fn hide_confirmation(&self);
+    fn show_return(&self);
+}
+
 impl Tweak {
-    fn title(&self) -> &'static str {
+    pub fn title(&self) -> &'static str {
         match self {
             Self::SystemUpdate => "System update",
             Self::VirtManager => "Install virt-manager",
@@ -86,27 +86,19 @@ This tweak will install Rust and some useful CLIs, in the process it will:
         scripts_dir().join(filename)
     }
 
-    pub fn prompt(&self, window: &NoidWelcomeWindow) {
-        let window = window.imp();
-
-        let stack_page_log = &window.stack_page_log.imp();
-        let buffer = &stack_page_log.text_view_log.buffer();
-
-        window.obj().emit_by_name::<()>("navigate", &[&"log"]);
-        window.header_label.set_label(self.title());
-
-        stack_page_log.obj().set_tweak(*self);
-        stack_page_log.box_confirmation.set_visible(true);
+    pub fn prompt(&self, buffer: &gtk::TextBuffer, logger: &impl TweakLogger) {
+        logger.set_tweak(*self);
+        logger.show_confirmation();
 
         buffer.set_text(HEADER);
         buffer.insert(&mut buffer.end_iter(), self.summary());
     }
 
-    pub fn run(&self, stack_page: &StackPageLog) {
-        let stack_page = stack_page.imp();
-        stack_page.box_confirmation.set_visible(false);
-
-        let buffer = stack_page.text_view_log.buffer();
+    pub fn run<F>(&self, buffer: gtk::TextBuffer, logger: &impl TweakLogger, on_done: F)
+    where
+        F: Fn() + 'static,
+    {
+        logger.hide_confirmation();
 
         let script = &self.script();
         let script = script.to_string_lossy();
@@ -124,19 +116,6 @@ This tweak will install Rust and some useful CLIs, in the process it will:
         .unwrap();
         let stream = gio::DataInputStream::new(&subprocess.stdout_pipe().unwrap());
 
-        read_line_utf8_async_to_buffer(
-            stream,
-            buffer,
-            glib::clone!(
-                #[weak]
-                stack_page,
-                move || {
-                    stack_page.button_return.set_visible(true);
-
-                    let buffer = stack_page.text_view_log.buffer();
-                    buffer.insert(&mut buffer.end_iter(), "Completed successfully\n");
-                }
-            ),
-        );
+        read_line_utf8_async_to_buffer(stream, buffer, on_done);
     }
 }

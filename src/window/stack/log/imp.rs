@@ -51,8 +51,23 @@ impl StackPageLog {
 
     #[template_callback]
     fn on_button_proceed_clicked(&self) {
+        let buffer = self.text_view_log.buffer();
         let current_tweak = self.current_tweak.borrow().unwrap();
-        current_tweak.run(&self.obj());
+
+        current_tweak.run(
+            buffer,
+            &*self.obj(),
+            glib::clone!(
+                #[weak(rename_to = stack_page)]
+                self,
+                move || {
+                    stack_page.button_return.set_visible(true);
+
+                    let buffer = stack_page.text_view_log.buffer();
+                    buffer.insert(&mut buffer.end_iter(), "Completed successfully\n");
+                }
+            ),
+        );
     }
 }
 

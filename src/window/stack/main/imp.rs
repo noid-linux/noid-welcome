@@ -43,35 +43,17 @@ impl StackPageMain {
 
     #[template_callback]
     fn on_button_system_update_clicked(&self) {
-        let window = self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
-
-        Tweak::SystemUpdate.prompt(&window);
+        self.obj().handle_tweak(Tweak::SystemUpdate);
     }
 
     #[template_callback]
     fn on_button_virt_manager_clicked(&self) {
-        let window = self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
-
-        Tweak::VirtManager.prompt(&window);
+        self.obj().handle_tweak(Tweak::VirtManager);
     }
 
     #[template_callback]
     fn on_button_oxidize_system_clicked(&self) {
-        let window = self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
-
-        Tweak::OxidizeSystem.prompt(&window);
+        self.obj().handle_tweak(Tweak::OxidizeSystem);
     }
 
     #[template_callback]
