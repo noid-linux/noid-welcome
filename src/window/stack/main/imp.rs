@@ -5,7 +5,7 @@
 
 use gtk::prelude::WidgetExt;
 
-use crate::{tweak::Tweak, util::autostart_file, window::NoidWelcomeWindow};
+use crate::{tweak::Tweak, util::autostart_file, window::Window};
 
 use super::*;
 
@@ -32,11 +32,7 @@ pub struct StackPageMain {
 impl StackPageMain {
     #[template_callback]
     fn on_button_get_software_clicked(&self) {
-        let window = self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
+        let window = self.obj().root().and_downcast::<Window>().unwrap();
 
         window.emit_by_name::<()>("navigate", &[&"get-software"])
     }

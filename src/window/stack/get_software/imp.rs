@@ -8,7 +8,7 @@ use std::{ffi::OsStr, sync::LazyLock};
 use gio::glib::subclass::Signal;
 use gtk::prelude::*;
 
-use crate::{util::read_line_utf8_async_to_buffer, window::NoidWelcomeWindow};
+use crate::{util::read_line_utf8_async_to_buffer, window::Window};
 
 use super::*;
 
@@ -38,22 +38,14 @@ pub struct StackPageGetSoftware {
 impl StackPageGetSoftware {
     #[template_callback]
     fn on_button_cancel_clicked(&self) {
-        let window = self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
+        let window = self.obj().root().and_downcast::<Window>().unwrap();
 
         window.emit_by_name::<()>("navigate", &[&"main"])
     }
 
     #[template_callback]
     fn on_button_return_clicked(&self) {
-        let window = self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
+        let window = self.obj().root().and_downcast::<Window>().unwrap();
 
         self.text_view_log.buffer().set_text("");
         self.button_return.set_visible(false);

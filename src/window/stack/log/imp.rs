@@ -5,7 +5,7 @@
 
 use std::cell::RefCell;
 
-use crate::window::NoidWelcomeWindow;
+use crate::window::Window;
 
 use super::*;
 
@@ -28,11 +28,7 @@ pub struct StackPageLog {
 impl StackPageLog {
     #[template_callback]
     fn on_button_return_clicked(&self) {
-        let window = self
-            .obj()
-            .root()
-            .and_downcast::<NoidWelcomeWindow>()
-            .unwrap();
+        let window = self.obj().root().and_downcast::<Window>().unwrap();
 
         window.emit_by_name::<()>("navigate", &[&"main"]);
 

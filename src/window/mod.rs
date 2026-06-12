@@ -13,12 +13,12 @@ mod imp;
 mod stack;
 
 glib::wrapper! {
-    pub struct NoidWelcomeWindow(ObjectSubclass<imp::NoidWelcomeWindow>)
+    pub struct Window(ObjectSubclass<imp::Window>)
         @extends gtk::Widget, gtk::Window, gtk::ApplicationWindow,
         @implements gio::ActionGroup, gio::ActionMap, gtk::ConstraintTarget, gtk::Buildable, gtk::Accessible, gtk::ShortcutManager, gtk::Root, gtk::Native;
 }
 
-impl NoidWelcomeWindow {
+impl Window {
     pub fn new<P: IsA<gtk::Application>>(application: &P) -> Self {
         glib::Object::builder()
             .property("application", application)

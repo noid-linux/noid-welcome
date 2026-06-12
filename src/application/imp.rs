@@ -3,7 +3,7 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use crate::window::NoidWelcomeWindow;
+use crate::window::Window;
 
 use super::*;
 
@@ -11,15 +11,14 @@ use super::*;
 pub struct Application {}
 
 impl Application {
-    fn present_main_window(&self) -> NoidWelcomeWindow {
+    fn present_main_window(&self) -> Window {
         let application = self.obj();
 
-        let window: NoidWelcomeWindow =
-            if let Some(window) = application.active_window().and_downcast() {
-                window
-            } else {
-                NoidWelcomeWindow::new(&*application).upcast()
-            };
+        let window: Window = if let Some(window) = application.active_window().and_downcast() {
+            window
+        } else {
+            Window::new(&*application).upcast()
+        };
 
         window.present();
         window

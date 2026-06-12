@@ -11,7 +11,7 @@ use super::*;
 
 #[derive(Debug, Default, gtk::CompositeTemplate)]
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
-pub struct NoidWelcomeWindow {
+pub struct Window {
     #[template_child]
     pub header_label: TemplateChild<gtk::Label>,
 
@@ -29,9 +29,9 @@ pub struct NoidWelcomeWindow {
 }
 
 #[glib::object_subclass]
-impl ObjectSubclass for NoidWelcomeWindow {
-    const NAME: &'static str = "NoidWelcomeWindow";
-    type Type = super::NoidWelcomeWindow;
+impl ObjectSubclass for Window {
+    const NAME: &'static str = "Window";
+    type Type = super::Window;
     type ParentType = gtk::ApplicationWindow;
 
     fn class_init(klass: &mut Self::Class) {
@@ -47,7 +47,7 @@ impl ObjectSubclass for NoidWelcomeWindow {
     }
 }
 
-impl ObjectImpl for NoidWelcomeWindow {
+impl ObjectImpl for Window {
     fn constructed(&self) {
         self.parent_constructed();
 
@@ -78,6 +78,6 @@ impl ObjectImpl for NoidWelcomeWindow {
     }
 }
 
-impl WidgetImpl for NoidWelcomeWindow {}
-impl WindowImpl for NoidWelcomeWindow {}
-impl ApplicationWindowImpl for NoidWelcomeWindow {}
+impl WidgetImpl for Window {}
+impl WindowImpl for Window {}
+impl ApplicationWindowImpl for Window {}

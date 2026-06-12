@@ -8,8 +8,7 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
-use crate::tweak::Tweak;
-use crate::window::NoidWelcomeWindow;
+use crate::{tweak::Tweak, window::Window};
 
 mod imp;
 
@@ -21,7 +20,7 @@ glib::wrapper! {
 
 impl StackPageMain {
     fn handle_tweak(&self, tweak: Tweak) {
-        let window = self.root().and_downcast::<NoidWelcomeWindow>().unwrap();
+        let window = self.root().and_downcast::<Window>().unwrap();
 
         let stack_page_log = &window.imp().stack_page_log.imp();
         let buffer = &stack_page_log.text_view_log.buffer();
