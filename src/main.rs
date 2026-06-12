@@ -24,7 +24,7 @@ mod tweak;
 mod util;
 mod window;
 
-use application::NoidWelcomeApplication;
+use application::Application;
 use gtk::glib;
 use gtk::prelude::*;
 
@@ -38,7 +38,7 @@ fn main() -> glib::ExitCode {
     gio::resources_register(&resources);
 
     // Create a new application
-    let app = NoidWelcomeApplication::new(APP_ID, &gio::ApplicationFlags::empty());
+    let app = Application::new(APP_ID, &gio::ApplicationFlags::empty());
 
     // Run the application
     app.run()

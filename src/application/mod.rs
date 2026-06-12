@@ -10,12 +10,12 @@ use gtk::{gio, glib};
 mod imp;
 
 glib::wrapper! {
-    pub struct NoidWelcomeApplication(ObjectSubclass<imp::NoidWelcomeApplication>)
+    pub struct Application(ObjectSubclass<imp::Application>)
         @extends gio::Application, gtk::Application,
         @implements gio::ActionGroup, gio::ActionMap;
 }
 
-impl NoidWelcomeApplication {
+impl Application {
     pub fn new(application_id: &str, flags: &gio::ApplicationFlags) -> Self {
         glib::Object::builder()
             .property("application-id", application_id)

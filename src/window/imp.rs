@@ -35,6 +35,10 @@ impl ObjectSubclass for NoidWelcomeWindow {
     type ParentType = gtk::ApplicationWindow;
 
     fn class_init(klass: &mut Self::Class) {
+        StackPageMain::ensure_type();
+        StackPageLog::ensure_type();
+        StackPageGetSoftware::ensure_type();
+
         klass.bind_template();
     }
 

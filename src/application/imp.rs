@@ -3,23 +3,37 @@
  * Copyright (C) 2026 Naz <ndpm13@ch-naseem.com>
  */
 
-use crate::window::{
-    NoidWelcomeWindow, PackageObject, StackPageGetSoftware, StackPageLog, StackPageMain,
-};
+use crate::window::NoidWelcomeWindow;
 
 use super::*;
 
 #[derive(Debug, Default)]
-pub struct NoidWelcomeApplication {}
+pub struct Application {}
+
+impl Application {
+    fn present_main_window(&self) -> NoidWelcomeWindow {
+        let application = self.obj();
+
+        let window: NoidWelcomeWindow =
+            if let Some(window) = application.active_window().and_downcast() {
+                window
+            } else {
+                NoidWelcomeWindow::new(&*application).upcast()
+            };
+
+        window.present();
+        window
+    }
+}
 
 #[glib::object_subclass]
-impl ObjectSubclass for NoidWelcomeApplication {
-    const NAME: &'static str = "NoidWelcomeApplication";
-    type Type = super::NoidWelcomeApplication;
+impl ObjectSubclass for Application {
+    const NAME: &'static str = "Application";
+    type Type = super::Application;
     type ParentType = gtk::Application;
 }
 
-impl ObjectImpl for NoidWelcomeApplication {
+impl ObjectImpl for Application {
     fn constructed(&self) {
         self.parent_constructed();
         let obj = self.obj();
@@ -27,25 +41,15 @@ impl ObjectImpl for NoidWelcomeApplication {
     }
 }
 
-impl ApplicationImpl for NoidWelcomeApplication {
+impl ApplicationImpl for Application {
     fn startup(&self) {
         self.parent_startup();
-        StackPageMain::static_type();
-        StackPageLog::static_type();
-        StackPageGetSoftware::static_type();
-        PackageObject::static_type();
     }
 
     fn activate(&self) {
-        let application = self.obj();
-
-        let window = application.active_window().unwrap_or_else(|| {
-            let window = NoidWelcomeWindow::new(&*application);
-            window.upcast()
-        });
-
-        window.present();
+        self.parent_activate();
+        self.present_main_window();
     }
 }
 
-impl GtkApplicationImpl for NoidWelcomeApplication {}
+impl GtkApplicationImpl for Application {}
