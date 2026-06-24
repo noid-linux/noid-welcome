@@ -12,7 +12,7 @@ pub fn autostart_file() -> std::path::PathBuf {
     gio::glib::home_dir()
         .join(".config")
         .join("autostart")
-        .join("noid-welcome.desktop")
+        .join("com.ch_naseem.NoidWelcome.desktop")
 }
 
 pub fn scripts_dir() -> std::path::PathBuf {

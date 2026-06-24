@@ -58,7 +58,9 @@ impl StackPageMain {
 
         if state {
             std::fs::copy(
-                std::path::PathBuf::from("/usr/share/applications/noid-welcome.desktop"),
+                std::path::PathBuf::from(
+                    "/usr/share/applications/com.ch_naseem.NoidWelcome.desktop",
+                ),
                 &autostart_file,
             )
             .unwrap();
