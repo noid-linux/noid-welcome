@@ -15,4 +15,10 @@ system updates, and setup scripts for Noid GNU/Linux.</p>
   <url type="donation">https://noid-linux.github.io/donate/</url>
   <url type="contact">https://matrix.to/#/#noid-support:ch-naseem.com</url>
   <launchable type="desktop-id">com.ch_naseem.NoidWelcome.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/noid-linux/noid-welcome/raw/refs/heads/main/screenshots/fullview.png</image>
+      <caption>Welcome page</caption>
+    </screenshot>
+  </screenshots>
 </component>
