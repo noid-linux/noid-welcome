@@ -6,12 +6,6 @@ template $Window: ApplicationWindow {
 	default-height: 650;
 	resizable: false;
 
-	titlebar: HeaderBar {
-		title-widget: Label header_label {
-			label: _("Welcome to Noid Linux");
-		};
-	};
-
 	child: Stack stack {
 		StackPage {
 			name: "main";

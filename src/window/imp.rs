@@ -13,9 +13,6 @@ use super::*;
 #[template(resource = "/com/ch-naseem/NoidWelcome/ui/window.ui")]
 pub struct Window {
     #[template_child]
-    pub header_label: TemplateChild<gtk::Label>,
-
-    #[template_child]
     pub stack: TemplateChild<gtk::Stack>,
 
     #[template_child]
@@ -56,8 +53,9 @@ impl ObjectImpl for Window {
             self,
             move |_widget, stackpage| {
                 match stackpage {
-                    "get-software" => window.obj().set_header_label(Some("Get software")),
-                    _ => window.obj().set_header_label(None),
+                    "get-software" => window.obj().set_title(Some("Get software")),
+                    "main" => window.obj().set_title(Some("Welcome to Noid Linux")),
+                    _ => {}
                 }
 
                 window.stack.set_visible_child_name(stackpage);

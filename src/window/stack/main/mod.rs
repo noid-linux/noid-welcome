@@ -26,7 +26,7 @@ impl StackPageMain {
         let buffer = &stack_page_log.text_view_log.buffer();
 
         window.emit_by_name::<()>("navigate", &[&"log"]);
-        window.imp().header_label.set_label(tweak.title());
+        window.set_title(Some(tweak.title()));
 
         tweak.prompt(buffer, &*stack_page_log.obj());
     }

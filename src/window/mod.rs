@@ -25,18 +25,6 @@ impl Window {
             .build()
     }
 
-    pub fn set_header_label(&self, label: Option<&str>) {
-        let header_label = &self.imp().header_label;
-
-        if let Some(label) = label {
-            header_label.set_label(label);
-        } else {
-            let title = &self.title().unwrap();
-
-            header_label.set_label(title.as_str());
-        }
-    }
-
     pub fn connect_navigate<F: Fn(&Self, &str) + 'static>(&self, f: F) -> glib::SignalHandlerId {
         self.connect_closure(
             "navigate",
