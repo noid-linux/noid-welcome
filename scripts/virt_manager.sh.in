@@ -5,6 +5,7 @@ set -euo pipefail
 
 INIT_SYSTEM=$(readlink -n /sbin/init)
 REQUIRED_PKGS=(qemu virt-manager virt-viewer dnsmasq vde2 bridge-utils openbsd-netcat libguestfs)
+ROOTLESS_USER=$(id -nu "$PKEXEC_UID")
 
 if [[ $INIT_SYSTEM == "dinit" ]]; then
 	REQUIRED_PKGS+=(libvirt-dinit)
@@ -17,8 +18,8 @@ unix_sock_rw_perms = \"0770\"
 "
 
 qemu_conf="
-user = \"$USER\"
-group = \"$USER\"
+user = \"$ROOTLESS_USER\"
+group = \"$ROOTLESS_USER\"
 "
 
 echo "Installing virtualization packages..."
@@ -61,9 +62,9 @@ else
 fi
 
 echo "Adding user to libvirt group..."
-usermod -aG libvirt "$USER"
+usermod -aG libvirt "$ROOTLESS_USER"
 
 echo "Adding user to kvm group..."
-usermod -aG kvm "$USER"
+usermod -aG kvm "$ROOTLESS_USER"
 
 echo "Setup complete. Restart your system for changes to fully take effect."
