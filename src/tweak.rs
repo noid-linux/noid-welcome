@@ -55,7 +55,7 @@ This tweak will attempt to update your system using xbps package manager
 This tweak will install virt-manager, in the process it will:
 - Install these deps: qemu, virt-manager, virt-viewer, dnsmasq, vde2,
   bridge-utils, openbsd-netcat, libguestfs
-- Enable these Runit services: libvirtd, virtlogd
+- Enable these services: libvirtd, virtlogd
 - Modify these files: /etc/libvirt/libvirtd.conf, /etc/libvirt/qemu.conf
 - Add your user to the libvirt user group.
 
