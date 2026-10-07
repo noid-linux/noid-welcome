@@ -67,6 +67,7 @@ And you will need to restart for changes to take effect.
                 r#"
 This tweak will install Rust and some useful CLIs, in the process it will:
 - Install rustup
+- Install Uutils coreutils
 - Install these CLIs: ripgrep, bat, fd-find, zoxide, eza, tealdeer,
   du-dust, bottom, cargo-update
 - Modify these files: ~/.zshrc, ~/.bashrc

@@ -22,7 +22,7 @@ if ! curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sudo -u "$user"
 fi
 
 echo "Installing CLI tools..."
-if ! xbps-install -Sy ripgrep bat fd zoxide eza tealdeer dust bottom cargo-update; then
+if ! xbps-install -Sy uutils-coreutils ripgrep bat fd zoxide eza tealdeer dust bottom cargo-update; then
     echo "CLI tools installation failed. Exiting."
     exit 1
 fi
