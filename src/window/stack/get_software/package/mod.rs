@@ -18,7 +18,7 @@ impl PackageObject {
         glib::Object::builder()
             .property(
                 "icon",
-                format!("/com/ch-naseem/NoidWelcome/images/packages/{pkgname}.svg"),
+                "/com/ch-naseem/NoidWelcome/images/package-x-generic.svg",
             )
             .property("pkgname", pkgname)
             .property("short_desc", short_desc)
