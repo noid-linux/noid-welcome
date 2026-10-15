@@ -17,7 +17,7 @@ pub struct PackageObject {
     pkgname: RefCell<String>,
 
     #[property(get, set)]
-    short_desc: RefCell<String>,
+    version: RefCell<String>,
 }
 
 #[glib::object_subclass]

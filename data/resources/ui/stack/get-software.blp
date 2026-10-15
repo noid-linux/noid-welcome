@@ -58,13 +58,13 @@ template $StackPageGetSoftware: Box {
 			}
 
 			ColumnViewColumn {
-				title: _("short_desc");
+				title: _("version");
 
 				factory: BuilderListItemFactory {
 					template ListItem {
 						child: Label {
 							halign: start;
-							label: bind template.item as <$PackageObject>.short_desc;
+							label: bind template.item as <$PackageObject>.version;
 						};
 					}
 				};

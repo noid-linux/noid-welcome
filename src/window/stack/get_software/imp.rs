@@ -6,7 +6,6 @@
 use std::{ffi::OsStr, sync::LazyLock};
 
 use gio::glib::subclass::Signal;
-use gtk::prelude::*;
 
 use crate::{util::read_line_utf8_async_to_buffer, window::Window};
 
@@ -135,42 +134,43 @@ impl ObjectImpl for StackPageGetSoftware {
     fn constructed(&self) {
         self.parent_constructed();
 
-        let custom_packages: Vec<(&str, &str)> = vec![
-            (
-                "brave",
-                "Web browser that blocks ads and trackers by default",
-            ),
-            (
-                "brave-origin",
-                "Minimalist browser from the makers of Brave",
-            ),
-            (
-                "librewolf",
-                "Fork of Firefox, focused on privacy, security and freedom",
-            ),
-            ("cinny-desktop", "Yet another matrix client for desktop"),
-            (
-                "freetube",
-                "Open source desktop YouTube player built with privacy in mind",
-            ),
-            (
-                "grayjay",
-                "Stream and download content from various sources",
-            ),
-            ("spotify-client", "Proprietary music streaming client"),
-            ("discord", "Chat and VOIP application"),
-            (
-                "obsidian",
-                "Private and flexible writing app that adapts to the way you think",
-            ),
-        ];
+        gtk::glib::MainContext::default().spawn_local(glib::clone!(
+            #[weak(rename_to = imp)]
+            self,
+            async move {
+                let body = crate::RUNTIME.spawn(
+                    async move {
+                        reqwest::get(
+                            "https://github.com/noid-linux/xbps-repo/raw/refs/heads/main/PACKAGES.md"
+                        )
+                        .await
+                        .expect("something went wrong :/")
+                        .text()
+                        .await
+                        .expect("something went wrong :/")
+                    }
+                )
+                .await
+                .expect("something went wrong :/");
 
-        custom_packages.iter().for_each(|pkg| {
-            self.list_store_packages
-                .append(&PackageObject::new(pkg.0, pkg.1));
-        });
+                let packages: Vec<(&str, &str)> = body
+                    .lines()
+                    .enumerate()
+                    .filter(|(index, _)| *index > 3)
+                    .map(|(_, line)| {
+                        let pkg = line.split('|').collect::<Vec<&str>>();
+                        (pkg[1].trim(), pkg[2].trim())
+                    })
+                    .collect();
 
-        self.selection_model_packages.select_item(0, true);
+                packages.iter().for_each(|pkg| {
+                    imp.list_store_packages
+                        .append(&PackageObject::new(pkg.0, pkg.1));
+                });
+
+                imp.selection_model_packages.select_item(0, true);
+            }
+        ));
     }
 
     fn signals() -> &'static [glib::subclass::Signal] {

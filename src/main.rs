@@ -24,13 +24,20 @@ mod tweak;
 mod util;
 mod window;
 
-use application::Application;
+use std::sync::LazyLock;
+
 use gtk::glib;
 use gtk::prelude::*;
 
+use application::Application;
 use config::PKGDATADIR;
 
 const APP_ID: &str = "com.ch_naseem.NoidWelcome";
+
+/// The default tokio runtime to be used for async tasks
+static RUNTIME: LazyLock<tokio::runtime::Runtime> = LazyLock::new(|| {
+    tokio::runtime::Runtime::new().expect("creating tokio runtime should succeed")
+});
 
 fn main() -> glib::ExitCode {
     let resources = gio::Resource::load(format!("{}/resources.gresource", PKGDATADIR))

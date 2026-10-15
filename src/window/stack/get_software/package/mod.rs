@@ -14,14 +14,14 @@ glib::wrapper! {
 }
 
 impl PackageObject {
-    pub fn new(pkgname: &str, short_desc: &str) -> Self {
+    pub fn new(pkgname: &str, version: &str) -> Self {
         glib::Object::builder()
             .property(
                 "icon",
                 "/com/ch-naseem/NoidWelcome/images/package-x-generic.svg",
             )
             .property("pkgname", pkgname)
-            .property("short_desc", short_desc)
+            .property("version", version)
             .build()
     }
 }
