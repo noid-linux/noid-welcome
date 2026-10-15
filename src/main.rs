@@ -20,6 +20,7 @@
 
 mod application;
 mod config;
+mod macros;
 mod tweak;
 mod util;
 mod window;

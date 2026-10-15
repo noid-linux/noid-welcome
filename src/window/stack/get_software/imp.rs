@@ -7,7 +7,7 @@ use std::{ffi::OsStr, sync::LazyLock};
 
 use gio::glib::subclass::Signal;
 
-use crate::{util::read_line_utf8_async_to_buffer, window::Window};
+use crate::{spawn, spawn_tokio, util::read_line_utf8_async_to_buffer, window::Window};
 
 use super::*;
 
@@ -134,22 +134,20 @@ impl ObjectImpl for StackPageGetSoftware {
     fn constructed(&self) {
         self.parent_constructed();
 
-        gtk::glib::MainContext::default().spawn_local(glib::clone!(
+        spawn!(glib::clone!(
             #[weak(rename_to = imp)]
             self,
             async move {
-                let body = crate::RUNTIME.spawn(
-                    async move {
-                        reqwest::get(
-                            "https://github.com/noid-linux/xbps-repo/raw/refs/heads/main/PACKAGES.md"
-                        )
-                        .await
-                        .expect("something went wrong :/")
-                        .text()
-                        .await
-                        .expect("something went wrong :/")
-                    }
-                )
+                let body = spawn_tokio!(async move {
+                    reqwest::get(
+                        "https://github.com/noid-linux/xbps-repo/raw/refs/heads/main/PACKAGES.md",
+                    )
+                    .await
+                    .expect("something went wrong :/")
+                    .text()
+                    .await
+                    .expect("something went wrong :/")
+                })
                 .await
                 .expect("something went wrong :/");
 
